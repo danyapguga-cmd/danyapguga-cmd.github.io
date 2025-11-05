@@ -328,9 +328,87 @@ body.game-mode { filter: contrast(1.06) saturate(1.1); }
     </footer>
   </div>
 
-  <script>
-    // Update year automatically
-    document.getElementById('year').textContent = new Date().getFullYear();
+    <script>
+  // Keep your dynamic year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ===== Scroll-reveal: fade/slide in section heads + figures =====
+  (function() {
+    const targets = document.querySelectorAll(
+      '.headline, .deck, .section-hed, figure, #works-cited'
+    );
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+
+    targets.forEach(el => {
+      el.classList.add('reveal');
+      io.observe(el);
+    });
+  })();
+
+  // ===== Easter Egg 1: "+1 APM" bubbles on clicks inside the article =====
+  (function() {
+    const story = document.querySelector('article.story');
+    if (!story) return;
+    story.addEventListener('click', (e) => {
+      const apm = document.createElement('div');
+      apm.className = 'apm';
+      apm.textContent = '+1 APM';
+      apm.style.left = e.clientX + 'px';
+      apm.style.top  = e.clientY + 'px';
+      document.body.appendChild(apm);
+      setTimeout(() => apm.remove(), 900);
+    });
+  })();
+
+  // ===== Helper: overlay banner =====
+  function showOverlay(text) {
+    const o = document.createElement('div');
+    o.className = 'gg-overlay';
+    o.setAttribute('role', 'status');
+    o.setAttribute('aria-live', 'polite');
+    o.textContent = text;
+    document.body.appendChild(o);
+    setTimeout(() => o.remove(), 1400);
+  }
+
+  // ===== Easter Egg 2: type "g" twice quickly to flash "GG" =====
+  (function() {
+    let gCount = 0, timer;
+    window.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() !== 'g') return;
+      gCount++;
+      clearTimeout(timer);
+      timer = setTimeout(() => gCount = 0, 550);
+      if (gCount >= 2) {
+        gCount = 0;
+        showOverlay('GG');
+      }
+    });
+  })();
+
+  // ===== Easter Egg 3: Konami Code toggles retro "Game Mode" overlay =====
+  (function() {
+    const combo = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let buf = [];
+    window.addEventListener('keydown', (e) => {
+      buf.push(e.key);
+      if (buf.length > combo.length) buf.shift();
+      // case-insensitive match
+      const ok = combo.every((k,i) => (buf[i] || '').toLowerCase() === k.toLowerCase());
+      if (ok) {
+        document.body.classList.toggle('game-mode');
+        showOverlay(document.body.classList.contains('game-mode') ? 'Game Mode: ON' : 'Game Mode: OFF');
+        buf = [];
+      }
+    });
+  })();
   </script>
 </body>
 </html>
