@@ -202,7 +202,7 @@
     /* ===== Idle Chaos: "voidwalker" + lifted elements ===== */
     body.chaos-mode .wrapper { filter: hue-rotate(10deg) saturate(1.06); }
     .lifted {
-      transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg));
+      /* NOTE: no transform here; JS sets inline transform for reliability */
       transition: transform 900ms ease, box-shadow 900ms ease, filter 900ms ease;
       box-shadow: 0 18px 30px rgba(0,0,0,.25);
       filter: brightness(1.03);
@@ -220,7 +220,6 @@
       transition: transform 900ms ease-in-out;
       will-change: transform;
     }
-    /* IMPORTANT: no CSS animation here; JS moves the walker */
     body.chaos-mode .voidwalker { display: block; }
     .voidwalker.carrying .vw-arm.left,
     .voidwalker.carrying .vw-arm.right { animation: none; transform: rotate(-22deg) !important; }
@@ -555,17 +554,19 @@
         const hands = { x: walkerRect.left + 60, y: walkerRect.top + 140 };
         const dx = (hands.x - (r.left + r.width/2));
         const dy = (hands.y - (r.top  + r.height/2));
-        el.style.setProperty('--tx', dx + 'px');
-        el.style.setProperty('--ty', dy + 'px');
-        el.style.setProperty('--rot', (Math.random()*10-5).toFixed(1) + 'deg');
+        // store original transform so we can restore perfectly
+        el.dataset.origTransform = el.style.transform || '';
+        const rot = (Math.random()*10-5).toFixed(1);
+        el.dataset.rot = rot;
+        el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
         el.classList.add('lifted');
         walker.classList.add('carrying');
         carrying = el;
       }
 
       function dropCarryAt(el, dropDx, dropDy) {
-        el.style.setProperty('--tx', dropDx + 'px');
-        el.style.setProperty('--ty', dropDy + 'px');
+        const rot = el.dataset.rot || '0';
+        el.style.transform = `translate(${dropDx}px, ${dropDy}px) rotate(${rot}deg)`;
         setTimeout(() => {
           walker.classList.remove('carrying');
           carrying = null;
@@ -584,7 +585,7 @@
             y: clamp(r.top  + r.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
           };
           setWalkerPos(targetScreen.x, targetScreen.y, CARRY_MS);
-          dropCarryAt(carrying, dropDx + 'px', dropDy + 'px');
+          dropCarryAt(carrying, dropDx, dropDy);
           return;
         }
 
@@ -613,16 +614,17 @@
             y: clamp(r2.top  + r2.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
           };
           setWalkerPos(to.x, to.y, CARRY_MS);
-          dropCarryAt(el, dropDx + 'px', dropDy + 'px');
+          dropCarryAt(el, dropDx, dropDy);
         }, WALK_MS + 30);
       }
 
       function clearHeistState() {
         document.querySelectorAll('.lifted').forEach(el => {
           el.classList.remove('lifted');
-          el.style.removeProperty('--tx');
-          el.style.removeProperty('--ty');
-          el.style.removeProperty('--rot');
+          // restore any original transform that was inline
+          el.style.transform = el.dataset.origTransform || '';
+          delete el.dataset.origTransform;
+          delete el.dataset.rot;
         });
         walker.classList.remove('carrying');
         carrying = null;
