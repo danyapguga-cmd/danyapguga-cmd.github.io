@@ -112,7 +112,7 @@
     .photo.two-up { display: flex; gap: 1rem; }
     .photo.two-up img { width: 50%; }
 
-    /* Meme overlay */
+    /* Meme overlay on the lead image */
     .photo.meme { position: relative; }
     .meme-text {
       position: absolute; left: 50%; transform: translateX(-50%);
@@ -132,10 +132,61 @@
     .meme-text.top    { top: 10px; }
     .meme-text.bottom { bottom: 10px; }
 
-    .ph { aspect-ratio: 16/9; display: grid; place-items: center; color: var(--muted); font-family: 'Libre Franklin', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 13px; }
-    figcaption {
-      font-family: 'Libre Franklin', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
-      font-size: 12px; color: var(--muted); line-height: 1.4; margin-top: 6px;
+    /* ===== Animations + Easter Eggs (motion-safe) ===== */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    /* Scroll-reveal */
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* Floating +1 APM bubble on clicks */
+    .apm {
+      position: fixed; left: 0; top: 0; transform: translate(-50%,-50%);
+      font-family: 'Libre Franklin', Arial, sans-serif; font-weight: 700;
+      pointer-events: none; color: #fff; text-shadow:
+        0 1px 0 #000, 1px 0 0 #000, 0 -1px 0 #000, -1px 0 0 #000,
+        2px 2px 0 #000, -2px 2px 0 #000;
+      animation: apm-up .9s ease-out forwards;
+      z-index: 9999;
+    }
+    @keyframes apm-up {
+      0%   { opacity: 0; transform: translate(-50%,-20%) scale(.9); }
+      10%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-120px) scale(1.1); }
+    }
+
+    /* GG / Game Mode overlay banner */
+    .gg-overlay {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      background: rgba(0,0,0,.65); color: #fff; z-index: 9998;
+      font-family: 'Anton', Impact, 'Arial Black', sans-serif;
+      font-size: clamp(36px,6vw,80px); letter-spacing: .5px; text-transform: uppercase;
+      animation: gg-pop .6s ease-out;
+    }
+    @keyframes gg-pop {
+      0% { transform: scale(.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* --- Stronger Game Mode visuals --- */
+    body.game-mode::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: 9997;
+      background:
+        linear-gradient(rgba(255,255,255,.05) 50%, transparent 50%) 0 0/100% 2px,
+        radial-gradient(circle at 50% 50%, transparent 0 3px, rgba(0,0,0,.12) 3px) 0 0/6px 6px,
+        linear-gradient(90deg, rgba(0,0,0,.25), transparent 60%, rgba(0,0,0,.25)) 0 0/100% 100%;
+      opacity: .85;
+      animation: crt-flicker 1.1s infinite ease-in-out alternate;
+    }
+    @keyframes crt-flicker {
+      0% { opacity: .75; }
+      100% { opacity: .9; }
+    }
+    body.game-mode {
+      filter: contrast(1.12) saturate(1.18) hue-rotate(3deg);
     }
 
     /* Links */
@@ -156,53 +207,6 @@
       a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 10px; color: #999; }
       body { color: #000; }
     }
-    /* ===== Animations + Easter Eggs (motion-safe) ===== */
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
-}
-
-/* Scroll-reveal */
-.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
-.reveal.visible { opacity: 1; transform: none; }
-
-/* Floating +1 APM bubble on clicks */
-.apm {
-  position: fixed; left: 0; top: 0; transform: translate(-50%,-50%);
-  font-family: 'Libre Franklin', Arial, sans-serif; font-weight: 700;
-  pointer-events: none; color: #fff; text-shadow:
-    0 1px 0 #000, 1px 0 0 #000, 0 -1px 0 #000, -1px 0 0 #000,
-    2px 2px 0 #000, -2px 2px 0 #000;
-  animation: apm-up .9s ease-out forwards;
-}
-@keyframes apm-up {
-  0%   { opacity: 0; transform: translate(-50%,-20%) scale(.9); }
-  10%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%,-120px) scale(1.1); }
-}
-
-/* GG / Game Mode overlay */
-.gg-overlay {
-  position: fixed; inset: 0; display: grid; place-items: center;
-  background: rgba(0,0,0,.65); color: #fff; z-index: 9999;
-  font-family: 'Anton', Impact, 'Arial Black', sans-serif;
-  font-size: clamp(36px,6vw,80px); letter-spacing: .5px; text-transform: uppercase;
-  animation: gg-pop .6s ease-out;
-}
-@keyframes gg-pop {
-  0% { transform: scale(.92); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* Retro “CRT” effect when game-mode is toggled */
-body.game-mode::before {
-  content: ""; position: fixed; inset: 0; pointer-events: none;
-  background:
-    linear-gradient(rgba(255,255,255,.035) 50%, transparent 50%) 0 0 / 100% 2px,
-    radial-gradient(circle at 50% 50%, transparent 0, transparent 3px, rgba(0,0,0,.08) 3px) 0 0/6px 6px;
-  mix-blend-mode: multiply; opacity: .55;
-}
-body.game-mode { filter: contrast(1.06) saturate(1.1); }
-
   </style>
 </head>
 <body>
@@ -215,7 +219,7 @@ body.game-mode { filter: contrast(1.06) saturate(1.1); }
       <div class="kicker">Sports & Culture</div>
       <h1 class="headline">Should Video Games Be Considered a Sport?</h1>
       <p class="deck">Esports demand skill, training, and organized competition—and they draw audiences rivaling traditional games. So why isn’t everyone calling them sports?</p>
-      <div class="byline">By <strong>Danya</strong> · <time datetime="2025-11-05">November 5, 2025</time></div>
+      <div class="byline">By <strong>Danya, Clayton, and Dylan</strong> · <time datetime="2025-11-05">November 5, 2025</time></div>
       <div class="rule" aria-hidden="true"></div>
     </header>
 
@@ -328,87 +332,103 @@ body.game-mode { filter: contrast(1.06) saturate(1.1); }
     </footer>
   </div>
 
-    <script>
-  // Keep your dynamic year
-  document.getElementById('year').textContent = new Date().getFullYear();
+  <script>
+    // Always start Game Mode OFF so the first success shows "ON"
+    document.body.classList.remove('game-mode');
 
-  // ===== Scroll-reveal: fade/slide in section heads + figures =====
-  (function() {
-    const targets = document.querySelectorAll(
-      '.headline, .deck, .section-hed, figure, #works-cited'
-    );
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          io.unobserve(e.target);
+    // Dynamic year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== Scroll-reveal for headings and figures =====
+    (function() {
+      const targets = document.querySelectorAll('.headline, .deck, .section-hed, figure, #works-cited');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.18 });
+      targets.forEach(el => { el.classList.add('reveal'); io.observe(el); });
+    })();
+
+    // ===== Easter Egg: "+1 APM" bubbles on clicks inside the article =====
+    (function() {
+      const story = document.querySelector('article.story');
+      if (!story) return;
+      story.addEventListener('click', (e) => {
+        const apm = document.createElement('div');
+        apm.className = 'apm';
+        apm.textContent = '+1 APM';
+        apm.style.left = e.clientX + 'px';
+        apm.style.top  = e.clientY + 'px';
+        document.body.appendChild(apm);
+        setTimeout(() => apm.remove(), 900);
+      });
+    })();
+
+    // Overlay banner helper
+    function showOverlay(text) {
+      const o = document.createElement('div');
+      o.className = 'gg-overlay';
+      o.setAttribute('role', 'status');
+      o.setAttribute('aria-live', 'polite');
+      o.textContent = text;
+      document.body.appendChild(o);
+      setTimeout(() => o.remove(), 1400);
+    }
+
+    // ===== GG overlay on double "g" press (optional fun) =====
+    (function() {
+      let gCount = 0, timer;
+      window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() !== 'g') return;
+        gCount++;
+        clearTimeout(timer);
+        timer = setTimeout(() => gCount = 0, 550);
+        if (gCount >= 2) { gCount = 0; showOverlay('GG'); }
+      });
+    })();
+
+    // ===== KONAMI: robust step-by-step matcher =====
+    (function() {
+      const combo = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+      let idx = 0;
+      window.addEventListener('keydown', (e) => {
+        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key; // normalize letters
+        const need = combo[idx].length === 1 ? combo[idx].toLowerCase() : combo[idx];
+        if (key === need) {
+          idx++;
+          if (idx === combo.length) {
+            idx = 0;
+            const turningOn = !document.body.classList.contains('game-mode');
+            document.body.classList.toggle('game-mode', turningOn);
+            showOverlay('Game Mode: ' + (turningOn ? 'ON' : 'OFF'));
+          }
+        } else {
+          const firstNeed = combo[0];
+          const firstKey  = firstNeed.length === 1 ? firstNeed.toLowerCase() : firstNeed;
+          idx = (key === firstKey) ? 1 : 0;
         }
       });
-    }, { threshold: 0.18 });
+    })();
 
-    targets.forEach(el => {
-      el.classList.add('reveal');
-      io.observe(el);
-    });
-  })();
-
-  // ===== Easter Egg 1: "+1 APM" bubbles on clicks inside the article =====
-  (function() {
-    const story = document.querySelector('article.story');
-    if (!story) return;
-    story.addEventListener('click', (e) => {
-      const apm = document.createElement('div');
-      apm.className = 'apm';
-      apm.textContent = '+1 APM';
-      apm.style.left = e.clientX + 'px';
-      apm.style.top  = e.clientY + 'px';
-      document.body.appendChild(apm);
-      setTimeout(() => apm.remove(), 900);
-    });
-  })();
-
-  // ===== Helper: overlay banner =====
-  function showOverlay(text) {
-    const o = document.createElement('div');
-    o.className = 'gg-overlay';
-    o.setAttribute('role', 'status');
-    o.setAttribute('aria-live', 'polite');
-    o.textContent = text;
-    document.body.appendChild(o);
-    setTimeout(() => o.remove(), 1400);
-  }
-
-  // ===== Easter Egg 2: type "g" twice quickly to flash "GG" =====
-  (function() {
-    let gCount = 0, timer;
-    window.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() !== 'g') return;
-      gCount++;
-      clearTimeout(timer);
-      timer = setTimeout(() => gCount = 0, 550);
-      if (gCount >= 2) {
-        gCount = 0;
-        showOverlay('GG');
-      }
-    });
-  })();
-
-  // ===== Easter Egg 3: Konami Code toggles retro "Game Mode" overlay =====
-  (function() {
-    const combo = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-    let buf = [];
-    window.addEventListener('keydown', (e) => {
-      buf.push(e.key);
-      if (buf.length > combo.length) buf.shift();
-      // case-insensitive match
-      const ok = combo.every((k,i) => (buf[i] || '').toLowerCase() === k.toLowerCase());
-      if (ok) {
-        document.body.classList.toggle('game-mode');
-        showOverlay(document.body.classList.contains('game-mode') ? 'Game Mode: ON' : 'Game Mode: OFF');
-        buf = [];
-      }
-    });
-  })();
+    // ===== Touch shortcut: double-tap the masthead toggles Game Mode (for phones) =====
+    (function() {
+      const mast = document.querySelector('.nyt-masthead');
+      if (!mast) return;
+      let lastTap = 0;
+      mast.addEventListener('touchend', () => {
+        const now = Date.now();
+        if (now - lastTap < 350) {
+          const turningOn = !document.body.classList.contains('game-mode');
+          document.body.classList.toggle('game-mode', turningOn);
+          showOverlay('Game Mode: ' + (turningOn ? 'ON' : 'OFF'));
+        }
+        lastTap = now;
+      });
+    })();
   </script>
 </body>
 </html>
