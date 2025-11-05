@@ -104,7 +104,7 @@
     }
 
     /* Figures with captions */
-    figure { margin: 22px 0; }
+    figure { margin: 22px 0; will-change: transform; }
     figure img, figure .ph { display: block; width: 100%; height: auto; border: 1px solid var(--rule); background: #f9f9f9; }
 
     /* Photo helpers + split figure */
@@ -170,24 +170,34 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* --- Stronger Game Mode visuals --- */
+    /* --- Game Mode visuals --- */
     body.game-mode::before {
       content: "";
       position: fixed; inset: 0; pointer-events: none; z-index: 9997;
       background:
-        linear-gradient(rgba(255,255,255,.05) 50%, transparent 50%) 0 0/100% 2px,
-        radial-gradient(circle at 50% 50%, transparent 0 3px, rgba(0,0,0,.12) 3px) 0 0/6px 6px,
-        linear-gradient(90deg, rgba(0,0,0,.25), transparent 60%, rgba(0,0,0,.25)) 0 0/100% 100%;
-      opacity: .85;
+        linear-gradient(rgba(255,255,255,.045) 50%, transparent 50%) 0 0/100% 2px,
+        radial-gradient(circle at 50% 50%, transparent 0 3px, rgba(0,0,0,.14) 3px) 0 0/6px 6px,
+        linear-gradient(90deg, rgba(0,0,0,.28), transparent 60%, rgba(0,0,0,.28)) 0 0/100% 100%;
+      opacity: .9;
       animation: crt-flicker 1.1s infinite ease-in-out alternate;
     }
-    @keyframes crt-flicker {
-      0% { opacity: .75; }
-      100% { opacity: .9; }
+    @keyframes crt-flicker { 0% { opacity:.78 } 100% { opacity:.92 } }
+    body.game-mode::after {
+      content:""; position: fixed; inset:0; pointer-events: none; z-index: 9996;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,.35) 100%);
+      mix-blend-mode: multiply;
     }
-    body.game-mode {
-      filter: contrast(1.12) saturate(1.18) hue-rotate(3deg);
+    body.game-mode { filter: contrast(1.18) saturate(1.25) hue-rotate(6deg); }
+    body.game-mode .headline, body.game-mode .section-hed {
+      text-shadow: 0 0 6px rgba(255,255,255,.2), 0 2px 12px rgba(0,0,0,.35);
+      transition: text-shadow .25s ease;
     }
+    body.game-mode figure img {
+      transform: scale(1.02);
+      filter: saturate(1.25) contrast(1.08) drop-shadow(0 8px 24px rgba(0,0,0,.25));
+      transition: transform .35s ease, filter .35s ease;
+    }
+    body.game-mode, body.game-mode * { cursor: crosshair !important; }
 
     /* ===== Idle Chaos: "voidwalker" + lifted elements ===== */
     body.chaos-mode .wrapper { filter: hue-rotate(10deg) saturate(1.06); }
@@ -198,6 +208,7 @@
       filter: brightness(1.03);
       z-index: 10;
       position: relative;
+      will-change: transform;
     }
 
     /* CSS-only “voidwalker” (generic shadow figure, NOT Minecraft assets) */
@@ -205,9 +216,11 @@
       position: fixed; left: 0; top: 0; width: 120px; height: 280px;
       z-index: 9996; pointer-events: none; opacity: .96; display: none;
       filter: drop-shadow(0 8px 16px rgba(0,0,0,.45));
-      transform: translate(-160px, calc(100vh - 320px));
-      transition: transform 1000ms ease-in-out;
+      transform: translate(-160px, calc(100vh - 320px)); /* off left at bottom by default */
+      transition: transform 900ms ease-in-out;
+      will-change: transform;
     }
+    /* IMPORTANT: no CSS animation here; JS moves the walker */
     body.chaos-mode .voidwalker { display: block; }
     .voidwalker.carrying .vw-arm.left,
     .voidwalker.carrying .vw-arm.right { animation: none; transform: rotate(-22deg) !important; }
@@ -465,21 +478,44 @@
       });
     })();
 
-    // ===== Idle Chaos: voidwalker heists (walks around, picks elements, drops them) =====
+    // ===== Game Mode mouse trail (optional flair) =====
+    (function() {
+      let enabled = false, onMove;
+      function spawnDot(x, y) {
+        const d = document.createElement('div');
+        d.style.position = 'fixed';
+        d.style.left = x + 'px';
+        d.style.top = y + 'px';
+        d.style.width = '6px'; d.style.height = '6px';
+        d.style.borderRadius = '50%';
+        d.style.background = 'rgba(255,255,255,.85)';
+        d.style.boxShadow = '0 0 10px rgba(255,255,255,.9), 0 0 24px rgba(120,120,255,.6)';
+        d.style.zIndex = 9999; d.style.pointerEvents = 'none';
+        d.style.opacity = 0.95; d.style.transition = 'transform .6s ease, opacity .6s ease';
+        document.body.appendChild(d);
+        requestAnimationFrame(() => { d.style.transform = 'translateY(-20px) scale(0.5)'; d.style.opacity = 0; });
+        setTimeout(() => d.remove(), 650);
+      }
+      function attach(){ if (enabled) return; enabled = true; onMove = e => document.body.classList.contains('game-mode') && spawnDot(e.clientX, e.clientY); window.addEventListener('mousemove', onMove, {passive:true}); }
+      function detach(){ if (!enabled) return; enabled = false; window.removeEventListener('mousemove', onMove); }
+      const obs = new MutationObserver(() => { document.body.classList.contains('game-mode') ? attach() : detach(); });
+      obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      if (document.body.classList.contains('game-mode')) attach();
+    })();
+
+    // ===== Idle Chaos: voidwalker heists (walks anywhere, picks elements, drops them) =====
     (function() {
       const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduce) return;
 
-      const IDLE_MS = 10000;   // time before chaos (10s). Change if you want faster
-      const WALK_MS = 1000;    // walker move duration
-      const CARRY_MS = 1000;   // carry/drop animation duration
+      const IDLE_MS  = 10000; // time before chaos (10s)
+      const WALK_MS  = 900;   // walker move duration
+      const CARRY_MS = 900;   // carry/drop animation duration
+      const walker   = document.querySelector('.voidwalker');
 
-      const walker = document.querySelector('.voidwalker');
       let idleTimer = null;
       let heistTimer = null;
       let carrying = null;
-
-      function vw() { return walker.getBoundingClientRect(); }
 
       function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
@@ -489,40 +525,36 @@
       }
 
       function viewportPointNear(elRect) {
-        // Aim slightly above the element center (like reaching for it)
+        // Aim slightly above element center (like reaching)
         const x = clamp(elRect.left + elRect.width * 0.5 - 60, 8, window.innerWidth - 128);
-        const y = clamp(elRect.top + elRect.height * 0.3 - 160, 8, window.innerHeight - 200);
+        const y = clamp(elRect.top  + elRect.height * 0.3 - 160, 8, window.innerHeight - 200);
         return { x, y };
-        }
+      }
 
       function randomWaypoint() {
-        const pad = 40;
+        const pad = 24;
         return {
-          x: clamp(Math.random() * (window.innerWidth - 120 - pad*2) + pad, 0, window.innerWidth - 120),
+          x: clamp(Math.random() * (window.innerWidth  - 120 - pad*2) + pad, 0, window.innerWidth  - 120),
           y: clamp(Math.random() * (window.innerHeight - 280 - pad*2) + pad, 0, window.innerHeight - 280)
         };
       }
 
       function movable() {
-        // pick from headings and figures (ignore tiny captions)
         return Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'))
           .filter(el => el.offsetParent && el.getBoundingClientRect().height > 40);
       }
 
       function pickTarget() {
-        const items = movable();
-        if (!items.length) return null;
-        // avoid picking what we're already carrying
-        const pool = items.filter(el => el !== carrying);
-        if (!pool.length) return null;
-        return pool[Math.floor(Math.random() * pool.length)];
+        const pool = movable().filter(el => el !== carrying);
+        return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
       }
 
       function pickUp(el) {
         const r = el.getBoundingClientRect();
-        const hands = { x: vw().left + 60, y: vw().top + 140 }; // roughly in front of the walker
+        const walkerRect = walker.getBoundingClientRect();
+        const hands = { x: walkerRect.left + 60, y: walkerRect.top + 140 };
         const dx = (hands.x - (r.left + r.width/2));
-        const dy = (hands.y - (r.top + r.height/2));
+        const dy = (hands.y - (r.top  + r.height/2));
         el.style.setProperty('--tx', dx + 'px');
         el.style.setProperty('--ty', dy + 'px');
         el.style.setProperty('--rot', (Math.random()*10-5).toFixed(1) + 'deg');
@@ -534,37 +566,31 @@
       function dropCarryAt(el, dropDx, dropDy) {
         el.style.setProperty('--tx', dropDx + 'px');
         el.style.setProperty('--ty', dropDy + 'px');
-        // keep lifted so it stays there until exitChaos
         setTimeout(() => {
           walker.classList.remove('carrying');
           carrying = null;
-        }, CARRY_MS + 50);
+        }, CARRY_MS + 40);
       }
 
       function performHeist() {
-        // If already carrying, choose a new waypoint/drop
+        // 1) If carrying → head toward drop point and drop
         if (carrying) {
           const r = carrying.getBoundingClientRect();
-          // choose a drop offset relative to its original place
-          const maxX = window.innerWidth * 0.30;
-          const maxY = window.innerHeight * 0.25;
-          const dropDx = (Math.random()*2-1) * maxX;
-          const dropDy = (Math.random()*2-1) * maxY;
+          const dropDx = (Math.random()*2-1) * (window.innerWidth * 0.30);
+          const dropDy = (Math.random()*2-1) * (window.innerHeight * 0.25);
 
-          // Move walker near the destination (relative to element's original place)
           const targetScreen = {
             x: clamp(r.left + r.width/2 + dropDx - 60, 8, window.innerWidth - 128),
             y: clamp(r.top  + r.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
           };
           setWalkerPos(targetScreen.x, targetScreen.y, CARRY_MS);
-          dropCarryAt(carrying, dropDx, dropDy);
+          dropCarryAt(carrying, dropDx + 'px', dropDy + 'px');
           return;
         }
 
-        // Not carrying: pick a new element and move to it
+        // 2) Not carrying → choose a target and walk to it
         const el = pickTarget();
         if (!el) {
-          // just wander if nothing eligible
           const wp = randomWaypoint();
           setWalkerPos(wp.x, wp.y, WALK_MS);
           return;
@@ -573,27 +599,22 @@
         const near = viewportPointNear(rect);
         setWalkerPos(near.x, near.y, WALK_MS);
 
-        // After walking there, "pick up"
+        // 3) After walking there, pick up and plan a drop
         setTimeout(() => {
-          // If user activity canceled chaos, bail
-          if (!document.body.classList.contains('chaos-mode')) return;
+          if (!document.body.classList.contains('chaos-mode')) return; // canceled
           pickUp(el);
 
-          // Immediately plan a drop
-          const maxX = window.innerWidth * 0.30;
-          const maxY = window.innerHeight * 0.25;
-          const dropDx = (Math.random()*2-1) * maxX;
-          const dropDy = (Math.random()*2-1) * maxY;
+          const dropDx = (Math.random()*2-1) * (window.innerWidth * 0.30);
+          const dropDy = (Math.random()*2-1) * (window.innerHeight * 0.25);
 
-          // Move walker toward drop while element animates to that offset
           const r2 = el.getBoundingClientRect();
           const to = {
             x: clamp(r2.left + r2.width/2 + dropDx - 60, 8, window.innerWidth - 128),
             y: clamp(r2.top  + r2.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
           };
           setWalkerPos(to.x, to.y, CARRY_MS);
-          dropCarryAt(el, dropDx, dropDy);
-        }, WALK_MS + 50);
+          dropCarryAt(el, dropDx + 'px', dropDy + 'px');
+        }, WALK_MS + 30);
       }
 
       function clearHeistState() {
@@ -610,11 +631,10 @@
       function enterChaos() {
         if (document.body.classList.contains('chaos-mode')) return;
         document.body.classList.add('chaos-mode');
-        // start walker at a random edge waypoint
         const start = randomWaypoint();
         setWalkerPos(start.x, start.y, WALK_MS);
         performHeist();
-        heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 400);
+        heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 420);
       }
 
       function exitChaos() {
