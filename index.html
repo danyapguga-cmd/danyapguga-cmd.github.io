@@ -192,7 +192,7 @@
     /* ===== Idle Chaos: "voidwalker" + lifted elements ===== */
     body.chaos-mode .wrapper { filter: hue-rotate(10deg) saturate(1.06); }
     .lifted {
-      transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0));
+      transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg));
       transition: transform 900ms ease, box-shadow 900ms ease, filter 900ms ease;
       box-shadow: 0 18px 30px rgba(0,0,0,.25);
       filter: brightness(1.03);
@@ -202,16 +202,16 @@
 
     /* CSS-only “voidwalker” (generic shadow figure, NOT Minecraft assets) */
     .voidwalker {
-      position: fixed; bottom: 0; left: -160px; width: 120px; height: 280px;
-      z-index: 9996; pointer-events: none; opacity: .92; display: none;
+      position: fixed; left: 0; top: 0; width: 120px; height: 280px;
+      z-index: 9996; pointer-events: none; opacity: .96; display: none;
       filter: drop-shadow(0 8px 16px rgba(0,0,0,.45));
+      transform: translate(-160px, calc(100vh - 320px));
+      transition: transform 1000ms ease-in-out;
     }
-    body.chaos-mode .voidwalker { display: block; animation: wander 14s linear infinite; }
-    @keyframes wander {
-      0%   { transform: translateX(-20vw) }
-      50%  { transform: translateX(50vw) }
-      100% { transform: translateX(120vw) }
-    }
+    body.chaos-mode .voidwalker { display: block; }
+    .voidwalker.carrying .vw-arm.left,
+    .voidwalker.carrying .vw-arm.right { animation: none; transform: rotate(-22deg) !important; }
+
     .vw-head, .vw-body, .vw-arm, .vw-leg { background: #0b0b0b; }
     .vw-head { width: 90px; height: 90px; margin: 0 auto; border-radius: 8px; position: relative; }
     .vw-eyes { position: absolute; top: 34px; left: 50%; transform: translateX(-50%); display: flex; gap: 14px; }
@@ -465,59 +465,162 @@
       });
     })();
 
-    // ===== Idle Chaos: voidwalker & scattered UI =====
+    // ===== Idle Chaos: voidwalker heists (walks around, picks elements, drops them) =====
     (function() {
       const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduce) return;
 
-      const IDLE_MS = 10000;   // time before chaos (10s). Change to 4000 for 4s, etc.
-      const TICK_MS = 2200;    // how often items move during chaos
+      const IDLE_MS = 10000;   // time before chaos (10s). Change if you want faster
+      const WALK_MS = 1000;    // walker move duration
+      const CARRY_MS = 1000;   // carry/drop animation duration
+
+      const walker = document.querySelector('.voidwalker');
       let idleTimer = null;
-      let chaosTimer = null;
+      let heistTimer = null;
+      let carrying = null;
 
-      const movable = () => Array.from(document.querySelectorAll(
-        '.headline, .deck, .section-hed, figure'
-      ));
+      function vw() { return walker.getBoundingClientRect(); }
 
-      function randomBetween(a, b) { return a + Math.random() * (b - a); }
+      function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
-      function scatterSome() {
-        const items = movable();
-        if (!items.length) return;
-        const count = Math.max(3, Math.min(6, Math.floor(randomBetween(3, 7))));
-        const picks = items.sort(() => 0.5 - Math.random()).slice(0, count);
-        picks.forEach(el => {
-          const tx = randomBetween(-25, 25).toFixed(1) + 'vw';
-          const ty = randomBetween(-15, 15).toFixed(1) + 'vh';
-          const rot = randomBetween(-6, 6).toFixed(1) + 'deg';
-          el.style.setProperty('--tx', tx);
-          el.style.setProperty('--ty', ty);
-          el.style.setProperty('--rot', rot);
-          el.classList.add('lifted');
-        });
+      function setWalkerPos(x, y, dur = WALK_MS) {
+        walker.style.transition = `transform ${dur}ms ease-in-out`;
+        walker.style.transform = `translate(${x}px, ${y}px)`;
       }
 
-      function clearScatter() {
+      function viewportPointNear(elRect) {
+        // Aim slightly above the element center (like reaching for it)
+        const x = clamp(elRect.left + elRect.width * 0.5 - 60, 8, window.innerWidth - 128);
+        const y = clamp(elRect.top + elRect.height * 0.3 - 160, 8, window.innerHeight - 200);
+        return { x, y };
+        }
+
+      function randomWaypoint() {
+        const pad = 40;
+        return {
+          x: clamp(Math.random() * (window.innerWidth - 120 - pad*2) + pad, 0, window.innerWidth - 120),
+          y: clamp(Math.random() * (window.innerHeight - 280 - pad*2) + pad, 0, window.innerHeight - 280)
+        };
+      }
+
+      function movable() {
+        // pick from headings and figures (ignore tiny captions)
+        return Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'))
+          .filter(el => el.offsetParent && el.getBoundingClientRect().height > 40);
+      }
+
+      function pickTarget() {
+        const items = movable();
+        if (!items.length) return null;
+        // avoid picking what we're already carrying
+        const pool = items.filter(el => el !== carrying);
+        if (!pool.length) return null;
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function pickUp(el) {
+        const r = el.getBoundingClientRect();
+        const hands = { x: vw().left + 60, y: vw().top + 140 }; // roughly in front of the walker
+        const dx = (hands.x - (r.left + r.width/2));
+        const dy = (hands.y - (r.top + r.height/2));
+        el.style.setProperty('--tx', dx + 'px');
+        el.style.setProperty('--ty', dy + 'px');
+        el.style.setProperty('--rot', (Math.random()*10-5).toFixed(1) + 'deg');
+        el.classList.add('lifted');
+        walker.classList.add('carrying');
+        carrying = el;
+      }
+
+      function dropCarryAt(el, dropDx, dropDy) {
+        el.style.setProperty('--tx', dropDx + 'px');
+        el.style.setProperty('--ty', dropDy + 'px');
+        // keep lifted so it stays there until exitChaos
+        setTimeout(() => {
+          walker.classList.remove('carrying');
+          carrying = null;
+        }, CARRY_MS + 50);
+      }
+
+      function performHeist() {
+        // If already carrying, choose a new waypoint/drop
+        if (carrying) {
+          const r = carrying.getBoundingClientRect();
+          // choose a drop offset relative to its original place
+          const maxX = window.innerWidth * 0.30;
+          const maxY = window.innerHeight * 0.25;
+          const dropDx = (Math.random()*2-1) * maxX;
+          const dropDy = (Math.random()*2-1) * maxY;
+
+          // Move walker near the destination (relative to element's original place)
+          const targetScreen = {
+            x: clamp(r.left + r.width/2 + dropDx - 60, 8, window.innerWidth - 128),
+            y: clamp(r.top  + r.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
+          };
+          setWalkerPos(targetScreen.x, targetScreen.y, CARRY_MS);
+          dropCarryAt(carrying, dropDx, dropDy);
+          return;
+        }
+
+        // Not carrying: pick a new element and move to it
+        const el = pickTarget();
+        if (!el) {
+          // just wander if nothing eligible
+          const wp = randomWaypoint();
+          setWalkerPos(wp.x, wp.y, WALK_MS);
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        const near = viewportPointNear(rect);
+        setWalkerPos(near.x, near.y, WALK_MS);
+
+        // After walking there, "pick up"
+        setTimeout(() => {
+          // If user activity canceled chaos, bail
+          if (!document.body.classList.contains('chaos-mode')) return;
+          pickUp(el);
+
+          // Immediately plan a drop
+          const maxX = window.innerWidth * 0.30;
+          const maxY = window.innerHeight * 0.25;
+          const dropDx = (Math.random()*2-1) * maxX;
+          const dropDy = (Math.random()*2-1) * maxY;
+
+          // Move walker toward drop while element animates to that offset
+          const r2 = el.getBoundingClientRect();
+          const to = {
+            x: clamp(r2.left + r2.width/2 + dropDx - 60, 8, window.innerWidth - 128),
+            y: clamp(r2.top  + r2.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
+          };
+          setWalkerPos(to.x, to.y, CARRY_MS);
+          dropCarryAt(el, dropDx, dropDy);
+        }, WALK_MS + 50);
+      }
+
+      function clearHeistState() {
         document.querySelectorAll('.lifted').forEach(el => {
           el.classList.remove('lifted');
           el.style.removeProperty('--tx');
           el.style.removeProperty('--ty');
           el.style.removeProperty('--rot');
-          el.style.removeProperty('transition');
         });
+        walker.classList.remove('carrying');
+        carrying = null;
       }
 
       function enterChaos() {
         if (document.body.classList.contains('chaos-mode')) return;
         document.body.classList.add('chaos-mode');
-        scatterSome();
-        chaosTimer = setInterval(scatterSome, TICK_MS);
+        // start walker at a random edge waypoint
+        const start = randomWaypoint();
+        setWalkerPos(start.x, start.y, WALK_MS);
+        performHeist();
+        heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 400);
       }
 
       function exitChaos() {
-        clearInterval(chaosTimer);
-        chaosTimer = null;
-        clearScatter();
+        clearInterval(heistTimer);
+        heistTimer = null;
+        clearHeistState();
         document.body.classList.remove('chaos-mode');
       }
 
@@ -533,6 +636,13 @@
       // Any user activity cancels chaos & resets timer
       ['mousemove','mousedown','keydown','touchstart','scroll','wheel'].forEach(ev => {
         window.addEventListener(ev, resetIdleTimer, { passive: true });
+      });
+
+      // Keep walker transitions consistent on resize
+      window.addEventListener('resize', () => {
+        if (!document.body.classList.contains('chaos-mode')) return;
+        const wp = randomWaypoint();
+        setWalkerPos(wp.x, wp.y, 600);
       });
     })();
 
