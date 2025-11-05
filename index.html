@@ -156,6 +156,53 @@
       a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 10px; color: #999; }
       body { color: #000; }
     }
+    /* ===== Animations + Easter Eggs (motion-safe) ===== */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Scroll-reveal */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* Floating +1 APM bubble on clicks */
+.apm {
+  position: fixed; left: 0; top: 0; transform: translate(-50%,-50%);
+  font-family: 'Libre Franklin', Arial, sans-serif; font-weight: 700;
+  pointer-events: none; color: #fff; text-shadow:
+    0 1px 0 #000, 1px 0 0 #000, 0 -1px 0 #000, -1px 0 0 #000,
+    2px 2px 0 #000, -2px 2px 0 #000;
+  animation: apm-up .9s ease-out forwards;
+}
+@keyframes apm-up {
+  0%   { opacity: 0; transform: translate(-50%,-20%) scale(.9); }
+  10%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-120px) scale(1.1); }
+}
+
+/* GG / Game Mode overlay */
+.gg-overlay {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  background: rgba(0,0,0,.65); color: #fff; z-index: 9999;
+  font-family: 'Anton', Impact, 'Arial Black', sans-serif;
+  font-size: clamp(36px,6vw,80px); letter-spacing: .5px; text-transform: uppercase;
+  animation: gg-pop .6s ease-out;
+}
+@keyframes gg-pop {
+  0% { transform: scale(.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Retro “CRT” effect when game-mode is toggled */
+body.game-mode::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(rgba(255,255,255,.035) 50%, transparent 50%) 0 0 / 100% 2px,
+    radial-gradient(circle at 50% 50%, transparent 0, transparent 3px, rgba(0,0,0,.08) 3px) 0 0/6px 6px;
+  mix-blend-mode: multiply; opacity: .55;
+}
+body.game-mode { filter: contrast(1.06) saturate(1.1); }
+
   </style>
 </head>
 <body>
