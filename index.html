@@ -362,7 +362,7 @@
     /* Idle Chaos: walker heist (as before) */
     (function(){
       if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-      const IDLE_MS=8000,WALK_MS=900,CARRY_MS=900,PAD=24,VIS_MIN=.55,NEAR_RAD=420,DROP_RAD=240;
+      const IDLE_MS=7000,WALK_MS=900,CARRY_MS=900,PAD=24,VIS_MIN=.55,NEAR_RAD=420,DROP_RAD=240;
       const walker=document.querySelector('.voidwalker');const layer=document.querySelector('.heist-layer');
       let idleTimer=null,heistTimer=null,carrying=null;const clones=new Map();
       function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
