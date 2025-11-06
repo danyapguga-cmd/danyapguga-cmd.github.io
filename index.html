@@ -210,7 +210,7 @@
       filter: brightness(1.03);
       transition: left 900ms ease, top 900ms ease, transform 900ms ease, filter 900ms ease;
       will-change: left, top, transform;
-      background: white; /* helps for text clones */
+      background: white;
     }
 
     /* ===== Voidwalker (generic shadow figure) ===== */
@@ -218,7 +218,7 @@
       position: fixed; left: 0; top: 0; width: 120px; height: 280px;
       z-index: 9996; pointer-events: none; opacity: .96; display: none;
       filter: drop-shadow(0 8px 16px rgba(0,0,0,.45));
-      transform: translate(-160px, calc(100vh - 320px)); /* off left at bottom by default */
+      transform: translate(-160px, calc(100vh - 320px));
       transition: transform 900ms ease-in-out;
       will-change: transform;
     }
@@ -505,15 +505,18 @@
       if (document.body.classList.contains('game-mode')) attach();
     })();
 
-    // ===== Idle Chaos: clone-and-carry heists =====
+    // ===== Idle Chaos: clone-and-carry heists (target nearest visible item; drop near walker) =====
     (function() {
       const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduce) return;
 
-      const IDLE_MS  = 8000;  // time before chaos
-      const WALK_MS  = 900;   // walker move duration
-      const CARRY_MS = 900;   // carry/drop duration
-      const PAD      = 24;
+      const IDLE_MS   = 8000;  // time before chaos
+      const WALK_MS   = 900;   // walker move duration
+      const CARRY_MS  = 900;   // carry/drop duration
+      const PAD       = 24;
+      const VIS_MIN   = 0.55;  // min visible area ratio to qualify as "visible"
+      const NEAR_RAD  = 420;   // how close the target must be to the walker to pick immediately
+      const DROP_RAD  = 240;   // radius around walker to drop the clone
 
       const walker   = document.querySelector('.voidwalker');
       const layer    = document.querySelector('.heist-layer');
@@ -521,43 +524,73 @@
       let idleTimer = null;
       let heistTimer = null;
       let carrying = null; // { el, clone }
-
-      // Map originals -> clones (so multiple pickups use same clone)
-      const clones = new Map();
+      const clones = new Map(); // originals -> clones
 
       function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+      function vwRect() { return walker.getBoundingClientRect(); }
 
       function setWalkerPos(x, y, dur = WALK_MS) {
         walker.style.transition = `transform ${dur}ms ease-in-out`;
         walker.style.transform = `translate(${x}px, ${y}px)`;
       }
 
-      function vwRect() { return walker.getBoundingClientRect(); }
+      function visibleAreaRatio(rect) {
+        const vx0 = 0, vy0 = 0, vx1 = window.innerWidth, vy1 = window.innerHeight;
+        const ix0 = Math.max(rect.left, vx0);
+        const iy0 = Math.max(rect.top,  vy0);
+        const ix1 = Math.min(rect.right, vx1);
+        const iy1 = Math.min(rect.bottom,vy1);
+        const iw = Math.max(0, ix1 - ix0);
+        const ih = Math.max(0, iy1 - iy0);
+        const inter = iw * ih;
+        const full  = Math.max(1, rect.width * rect.height);
+        return inter / full;
+      }
 
-      function viewportPointNear(rect) {
-        const x = clamp(rect.left + rect.width * 0.5 - 60, 8, window.innerWidth - 128);
-        const y = clamp(rect.top  + rect.height * 0.3 - 160, 8, window.innerHeight - 200);
+      function viewportPointNear(elRect) {
+        const x = clamp(elRect.left + elRect.width * 0.5 - 60, 8, window.innerWidth - 128);
+        const y = clamp(elRect.top  + elRect.height * 0.3 - 160, 8, window.innerHeight - 200);
         return { x, y };
       }
 
-      function randomScreenPoint(w = 120, h = 120) {
-        const x = clamp(Math.random() * (window.innerWidth  - w  - PAD*2) + PAD, 0, window.innerWidth  - w);
-        const y = clamp(Math.random() * (window.innerHeight - h - PAD*2) + PAD, 0, window.innerHeight - h);
+      function randomScreenPoint(w = 120, h = 120, around) {
+        if (around) {
+          // pick a point near "around" with some jitter and clamp to viewport
+          const jitter = () => (Math.random()*2 - 1);
+          const x = clamp(around.x + jitter()*DROP_RAD, PAD, window.innerWidth  - w  - PAD);
+          const y = clamp(around.y + jitter()*DROP_RAD, PAD, window.innerHeight - h - PAD);
+          return { x, y };
+        }
+        const x = clamp(Math.random() * (window.innerWidth  - w  - PAD*2) + PAD, PAD, window.innerWidth  - w  - PAD);
+        const y = clamp(Math.random() * (window.innerHeight - h - PAD*2) + PAD, PAD, window.innerHeight - h - PAD);
         return { x, y };
       }
 
-      function inViewport(rect) {
-        return rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+      function candidateElements() {
+        // Only items with good visible area and in the middle vertical band (avoid picking way off-screen edges)
+        const els = Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'))
+          .filter(el => el.offsetParent);
+        const vh = window.innerHeight;
+        return els.filter(el => {
+          const r = el.getBoundingClientRect();
+          const vis = visibleAreaRatio(r);
+          const centerY = (r.top + r.bottom) / 2;
+          const inMiddleBand = centerY > vh * 0.12 && centerY < vh * 0.88;
+          return vis >= VIS_MIN && inMiddleBand && r.height > 40 && r.width > 80;
+        });
       }
 
-      function movable() {
-        return Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'))
-          .filter(el => el.offsetParent && el.getBoundingClientRect().height > 40 && inViewport(el.getBoundingClientRect()));
-      }
-
-      function pickTarget() {
-        const pool = movable().filter(el => !carrying || el !== carrying.el);
-        return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+      function nearestToWalker(els) {
+        const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
+        let best = null, bestD2 = Infinity;
+        for (const el of els) {
+          const r = el.getBoundingClientRect();
+          const cx = r.left + r.width/2;
+          const cy = r.top  + r.height/2;
+          const d2 = (cx - hands.x)*(cx - hands.x) + (cy - hands.y)*(cy - hands.y);
+          if (d2 < bestD2) { bestD2 = d2; best = { el, d2, rect: r }; }
+        }
+        return best;
       }
 
       function ensureClone(el) {
@@ -568,11 +601,9 @@
         clone.style.width = rect.width + 'px';
         clone.style.left  = rect.left + 'px';
         clone.style.top   = rect.top  + 'px';
-        // small random tilt so it looks "grabbed"
         const rot = (Math.random()*10-5).toFixed(1);
         clone.style.transform = `rotate(${rot}deg)`;
         layer.appendChild(clone);
-        // hide original but keep its space so layout doesn't jump
         el.style.visibility = 'hidden';
         clones.set(el, clone);
         return clone;
@@ -588,55 +619,55 @@
         const clone = ensureClone(el);
         const cRect = clone.getBoundingClientRect();
         const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
-        moveCloneTo(clone, clamp(hands.x - cRect.width/2, 0, window.innerWidth - cRect.width),
-                           clamp(hands.y - cRect.height*0.6, 0, window.innerHeight - cRect.height), CARRY_MS);
+        const x = clamp(hands.x - cRect.width/2,  PAD, window.innerWidth  - cRect.width  - PAD);
+        const y = clamp(hands.y - cRect.height*0.6, PAD, window.innerHeight - cRect.height - PAD);
+        moveCloneTo(clone, x, y, CARRY_MS);
         walker.classList.add('carrying');
         carrying = { el, clone };
       }
 
-      function dropCarrySomewhere() {
+      function dropNearWalker() {
         if (!carrying) return;
         const { clone } = carrying;
         const cRect = clone.getBoundingClientRect();
-        const drop = randomScreenPoint(cRect.width, cRect.height);
-
-        // walk near the drop first for flavor
+        const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
+        const drop = randomScreenPoint(cRect.width, cRect.height, hands);
+        // Walk a smidge toward the drop point for flavor
         const near = { x: clamp(drop.x - 60 + cRect.width/2, 8, window.innerWidth - 128),
                        y: clamp(drop.y - 160 + cRect.height*0.3, 8, window.innerHeight - 200) };
         setWalkerPos(near.x, near.y, CARRY_MS);
         moveCloneTo(clone, drop.x, drop.y, CARRY_MS);
-
-        setTimeout(() => {
-          walker.classList.remove('carrying');
-          carrying = null;
-        }, CARRY_MS + 40);
+        setTimeout(() => { walker.classList.remove('carrying'); carrying = null; }, CARRY_MS + 40);
       }
 
       function performHeist() {
-        if (carrying) {
-          // already holding something → go drop it
-          dropCarrySomewhere();
-          return;
-        }
-        const el = pickTarget();
-        if (!el) {
-          // wander a bit if nothing visible
-          const p = randomScreenPoint(120, 280);
+        if (carrying) { dropNearWalker(); return; }
+
+        const pool = candidateElements();
+        if (!pool.length) {
+          // nothing obvious → wander a little near center
+          const mid = { x: window.innerWidth/2, y: window.innerHeight/2 };
+          const p = randomScreenPoint(120, 280, mid);
           setWalkerPos(p.x, p.y, WALK_MS);
           return;
         }
-        // walk near the element, then pick it up
-        const rect = el.getBoundingClientRect();
-        const near = viewportPointNear(rect);
-        setWalkerPos(near.x, near.y, WALK_MS);
+
+        const choice = nearestToWalker(pool);
+        if (!choice) return;
+
+        const dist = Math.sqrt(choice.d2);
+        // If far, walk close first; if already near, grab immediately after a tiny shim
+        const targetNear = viewportPointNear(choice.rect);
+        setWalkerPos(targetNear.x, targetNear.y, WALK_MS);
+
+        const delay = dist > NEAR_RAD ? WALK_MS + 120 : 120;
         setTimeout(() => {
           if (!document.body.classList.contains('chaos-mode')) return;
-          pickUp(el);
-        }, WALK_MS + 30);
+          pickUp(choice.el);
+        }, delay);
       }
 
       function clearHeistState() {
-        // remove clones and show originals
         clones.forEach((clone, el) => {
           if (clone && clone.parentNode) clone.parentNode.removeChild(clone);
           el.style.visibility = '';
@@ -649,10 +680,10 @@
       function enterChaos() {
         if (document.body.classList.contains('chaos-mode')) return;
         document.body.classList.add('chaos-mode');
-        const start = randomScreenPoint(120, 280);
+        const start = randomScreenPoint(120, 280, { x: window.innerWidth/2, y: window.innerHeight*0.8 });
         setWalkerPos(start.x, start.y, WALK_MS);
         performHeist();
-        heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 420);
+        heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 520);
       }
 
       function exitChaos() {
@@ -668,7 +699,7 @@
         idleTimer = setTimeout(enterChaos, IDLE_MS);
       }
 
-      // Kick things off
+      // Start idle timer
       resetIdleTimer();
 
       // Any user activity cancels chaos & resets timer
@@ -676,7 +707,7 @@
         window.addEventListener(ev, resetIdleTimer, { passive: true });
       });
 
-      // Keep walker/clones consistent on resize → exit (to avoid weirdness)
+      // On resize, exit to avoid weird clone positions and restart timer
       window.addEventListener('resize', () => {
         if (!document.body.classList.contains('chaos-mode')) return;
         exitChaos();
