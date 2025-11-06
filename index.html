@@ -104,7 +104,7 @@
     }
 
     /* Figures with captions */
-    figure { margin: 22px 0; will-change: transform; }
+    figure { margin: 22px 0; }
     figure img, figure .ph { display: block; width: 100%; height: auto; border: 1px solid var(--rule); background: #f9f9f9; }
 
     /* Photo helpers + split figure */
@@ -170,7 +170,7 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* --- Game Mode visuals --- */
+    /* --- Game Mode: visible CRT vibe --- */
     body.game-mode::before {
       content: "";
       position: fixed; inset: 0; pointer-events: none; z-index: 9997;
@@ -199,19 +199,21 @@
     }
     body.game-mode, body.game-mode * { cursor: crosshair !important; }
 
-    /* ===== Idle Chaos: "voidwalker" + lifted elements ===== */
-    body.chaos-mode .wrapper { filter: hue-rotate(10deg) saturate(1.06); }
-    .lifted {
-      /* NOTE: no transform here; JS sets inline transform for reliability */
-      transition: transform 900ms ease, box-shadow 900ms ease, filter 900ms ease;
+    /* ===== Heist overlay ===== */
+    .heist-layer {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9995;
+    }
+    .lifted-clone {
+      position: fixed; left: 0; top: 0; margin: 0;
+      z-index: 9995; pointer-events: none;
       box-shadow: 0 18px 30px rgba(0,0,0,.25);
       filter: brightness(1.03);
-      z-index: 10;
-      position: relative;
-      will-change: transform;
+      transition: left 900ms ease, top 900ms ease, transform 900ms ease, filter 900ms ease;
+      will-change: left, top, transform;
+      background: white; /* helps for text clones */
     }
 
-    /* CSS-only “voidwalker” (generic shadow figure, NOT Minecraft assets) */
+    /* ===== Voidwalker (generic shadow figure) ===== */
     .voidwalker {
       position: fixed; left: 0; top: 0; width: 120px; height: 280px;
       z-index: 9996; pointer-events: none; opacity: .96; display: none;
@@ -273,7 +275,7 @@
 
     <article class="story" role="article">
 
-      <!-- Lead "meme" image: LoL Worlds crowd with overlaid meme text -->
+      <!-- Lead "meme" image -->
       <figure class="photo meme">
         <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/League_of_Legends_World_Championship_2017_Finals.jpg"
              alt="League of Legends World Championship finals in a packed stadium" loading="lazy">
@@ -380,7 +382,8 @@
     </footer>
   </div>
 
-  <!-- Generic “voidwalker” figure (CSS-drawn) -->
+  <!-- Heist overlay + Voidwalker -->
+  <div class="heist-layer" aria-hidden="true"></div>
   <div class="voidwalker" aria-hidden="true">
     <div class="vw-head">
       <div class="vw-eyes">
@@ -402,7 +405,7 @@
     // Dynamic year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ===== Scroll-reveal for headings and figures =====
+    // ===== Scroll-reveal =====
     (function() {
       const targets = document.querySelectorAll('.headline, .deck, .section-hed, figure, #works-cited');
       const io = new IntersectionObserver((entries) => {
@@ -416,7 +419,7 @@
       targets.forEach(el => { el.classList.add('reveal'); io.observe(el); });
     })();
 
-    // ===== Easter Egg: "+1 APM" bubbles on clicks inside the article =====
+    // ===== "+1 APM" bubbles =====
     (function() {
       const story = document.querySelector('article.story');
       if (!story) return;
@@ -442,7 +445,7 @@
       setTimeout(() => o.remove(), 1400);
     }
 
-    // ===== GG overlay on double "g" press (optional fun) =====
+    // ===== GG overlay on double "g" =====
     (function() {
       let gCount = 0, timer;
       window.addEventListener('keydown', (e) => {
@@ -454,20 +457,20 @@
       });
     })();
 
-    // ===== KONAMI: robust step-by-step matcher =====
+    // ===== KONAMI toggles Game Mode =====
     (function() {
       const combo = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
       let idx = 0;
       window.addEventListener('keydown', (e) => {
-        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key; // normalize letters
+        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
         const need = combo[idx].length === 1 ? combo[idx].toLowerCase() : combo[idx];
         if (key === need) {
           idx++;
           if (idx === combo.length) {
             idx = 0;
-            const turningOn = !document.body.classList.contains('game-mode');
-            document.body.classList.toggle('game-mode', turningOn);
-            showOverlay('Game Mode: ' + (turningOn ? 'ON' : 'OFF'));
+            const on = !document.body.classList.contains('game-mode');
+            document.body.classList.toggle('game-mode', on);
+            showOverlay('Game Mode: ' + (on ? 'ON' : 'OFF'));
           }
         } else {
           const firstNeed = combo[0];
@@ -477,7 +480,7 @@
       });
     })();
 
-    // ===== Game Mode mouse trail (optional flair) =====
+    // ===== Game Mode mouse trail =====
     (function() {
       let enabled = false, onMove;
       function spawnDot(x, y) {
@@ -502,19 +505,25 @@
       if (document.body.classList.contains('game-mode')) attach();
     })();
 
-    // ===== Idle Chaos: voidwalker heists (walks anywhere, picks elements, drops them) =====
+    // ===== Idle Chaos: clone-and-carry heists =====
     (function() {
       const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduce) return;
 
-      const IDLE_MS  = 10000; // time before chaos (10s)
+      const IDLE_MS  = 8000;  // time before chaos
       const WALK_MS  = 900;   // walker move duration
-      const CARRY_MS = 900;   // carry/drop animation duration
+      const CARRY_MS = 900;   // carry/drop duration
+      const PAD      = 24;
+
       const walker   = document.querySelector('.voidwalker');
+      const layer    = document.querySelector('.heist-layer');
 
       let idleTimer = null;
       let heistTimer = null;
-      let carrying = null;
+      let carrying = null; // { el, clone }
+
+      // Map originals -> clones (so multiple pickups use same clone)
+      const clones = new Map();
 
       function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
@@ -523,50 +532,80 @@
         walker.style.transform = `translate(${x}px, ${y}px)`;
       }
 
-      function viewportPointNear(elRect) {
-        // Aim slightly above element center (like reaching)
-        const x = clamp(elRect.left + elRect.width * 0.5 - 60, 8, window.innerWidth - 128);
-        const y = clamp(elRect.top  + elRect.height * 0.3 - 160, 8, window.innerHeight - 200);
+      function vwRect() { return walker.getBoundingClientRect(); }
+
+      function viewportPointNear(rect) {
+        const x = clamp(rect.left + rect.width * 0.5 - 60, 8, window.innerWidth - 128);
+        const y = clamp(rect.top  + rect.height * 0.3 - 160, 8, window.innerHeight - 200);
         return { x, y };
       }
 
-      function randomWaypoint() {
-        const pad = 24;
-        return {
-          x: clamp(Math.random() * (window.innerWidth  - 120 - pad*2) + pad, 0, window.innerWidth  - 120),
-          y: clamp(Math.random() * (window.innerHeight - 280 - pad*2) + pad, 0, window.innerHeight - 280)
-        };
+      function randomScreenPoint(w = 120, h = 120) {
+        const x = clamp(Math.random() * (window.innerWidth  - w  - PAD*2) + PAD, 0, window.innerWidth  - w);
+        const y = clamp(Math.random() * (window.innerHeight - h - PAD*2) + PAD, 0, window.innerHeight - h);
+        return { x, y };
+      }
+
+      function inViewport(rect) {
+        return rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
       }
 
       function movable() {
         return Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'))
-          .filter(el => el.offsetParent && el.getBoundingClientRect().height > 40);
+          .filter(el => el.offsetParent && el.getBoundingClientRect().height > 40 && inViewport(el.getBoundingClientRect()));
       }
 
       function pickTarget() {
-        const pool = movable().filter(el => el !== carrying);
+        const pool = movable().filter(el => !carrying || el !== carrying.el);
         return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
       }
 
-      function pickUp(el) {
-        const r = el.getBoundingClientRect();
-        const walkerRect = walker.getBoundingClientRect();
-        const hands = { x: walkerRect.left + 60, y: walkerRect.top + 140 };
-        const dx = (hands.x - (r.left + r.width/2));
-        const dy = (hands.y - (r.top  + r.height/2));
-        // store original transform so we can restore perfectly
-        el.dataset.origTransform = el.style.transform || '';
+      function ensureClone(el) {
+        if (clones.has(el)) return clones.get(el);
+        const rect = el.getBoundingClientRect();
+        const clone = el.cloneNode(true);
+        clone.classList.add('lifted-clone');
+        clone.style.width = rect.width + 'px';
+        clone.style.left  = rect.left + 'px';
+        clone.style.top   = rect.top  + 'px';
+        // small random tilt so it looks "grabbed"
         const rot = (Math.random()*10-5).toFixed(1);
-        el.dataset.rot = rot;
-        el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
-        el.classList.add('lifted');
-        walker.classList.add('carrying');
-        carrying = el;
+        clone.style.transform = `rotate(${rot}deg)`;
+        layer.appendChild(clone);
+        // hide original but keep its space so layout doesn't jump
+        el.style.visibility = 'hidden';
+        clones.set(el, clone);
+        return clone;
       }
 
-      function dropCarryAt(el, dropDx, dropDy) {
-        const rot = el.dataset.rot || '0';
-        el.style.transform = `translate(${dropDx}px, ${dropDy}px) rotate(${rot}deg)`;
+      function moveCloneTo(clone, x, y, dur = CARRY_MS) {
+        clone.style.transitionDuration = dur + 'ms';
+        clone.style.left = x + 'px';
+        clone.style.top  = y + 'px';
+      }
+
+      function pickUp(el) {
+        const clone = ensureClone(el);
+        const cRect = clone.getBoundingClientRect();
+        const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
+        moveCloneTo(clone, clamp(hands.x - cRect.width/2, 0, window.innerWidth - cRect.width),
+                           clamp(hands.y - cRect.height*0.6, 0, window.innerHeight - cRect.height), CARRY_MS);
+        walker.classList.add('carrying');
+        carrying = { el, clone };
+      }
+
+      function dropCarrySomewhere() {
+        if (!carrying) return;
+        const { clone } = carrying;
+        const cRect = clone.getBoundingClientRect();
+        const drop = randomScreenPoint(cRect.width, cRect.height);
+
+        // walk near the drop first for flavor
+        const near = { x: clamp(drop.x - 60 + cRect.width/2, 8, window.innerWidth - 128),
+                       y: clamp(drop.y - 160 + cRect.height*0.3, 8, window.innerHeight - 200) };
+        setWalkerPos(near.x, near.y, CARRY_MS);
+        moveCloneTo(clone, drop.x, drop.y, CARRY_MS);
+
         setTimeout(() => {
           walker.classList.remove('carrying');
           carrying = null;
@@ -574,58 +613,35 @@
       }
 
       function performHeist() {
-        // 1) If carrying → head toward drop point and drop
         if (carrying) {
-          const r = carrying.getBoundingClientRect();
-          const dropDx = (Math.random()*2-1) * (window.innerWidth * 0.30);
-          const dropDy = (Math.random()*2-1) * (window.innerHeight * 0.25);
-
-          const targetScreen = {
-            x: clamp(r.left + r.width/2 + dropDx - 60, 8, window.innerWidth - 128),
-            y: clamp(r.top  + r.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
-          };
-          setWalkerPos(targetScreen.x, targetScreen.y, CARRY_MS);
-          dropCarryAt(carrying, dropDx, dropDy);
+          // already holding something → go drop it
+          dropCarrySomewhere();
           return;
         }
-
-        // 2) Not carrying → choose a target and walk to it
         const el = pickTarget();
         if (!el) {
-          const wp = randomWaypoint();
-          setWalkerPos(wp.x, wp.y, WALK_MS);
+          // wander a bit if nothing visible
+          const p = randomScreenPoint(120, 280);
+          setWalkerPos(p.x, p.y, WALK_MS);
           return;
         }
+        // walk near the element, then pick it up
         const rect = el.getBoundingClientRect();
         const near = viewportPointNear(rect);
         setWalkerPos(near.x, near.y, WALK_MS);
-
-        // 3) After walking there, pick up and plan a drop
         setTimeout(() => {
-          if (!document.body.classList.contains('chaos-mode')) return; // canceled
+          if (!document.body.classList.contains('chaos-mode')) return;
           pickUp(el);
-
-          const dropDx = (Math.random()*2-1) * (window.innerWidth * 0.30);
-          const dropDy = (Math.random()*2-1) * (window.innerHeight * 0.25);
-
-          const r2 = el.getBoundingClientRect();
-          const to = {
-            x: clamp(r2.left + r2.width/2 + dropDx - 60, 8, window.innerWidth - 128),
-            y: clamp(r2.top  + r2.height*0.3 + dropDy - 160, 8, window.innerHeight - 200)
-          };
-          setWalkerPos(to.x, to.y, CARRY_MS);
-          dropCarryAt(el, dropDx, dropDy);
         }, WALK_MS + 30);
       }
 
       function clearHeistState() {
-        document.querySelectorAll('.lifted').forEach(el => {
-          el.classList.remove('lifted');
-          // restore any original transform that was inline
-          el.style.transform = el.dataset.origTransform || '';
-          delete el.dataset.origTransform;
-          delete el.dataset.rot;
+        // remove clones and show originals
+        clones.forEach((clone, el) => {
+          if (clone && clone.parentNode) clone.parentNode.removeChild(clone);
+          el.style.visibility = '';
         });
+        clones.clear();
         walker.classList.remove('carrying');
         carrying = null;
       }
@@ -633,7 +649,7 @@
       function enterChaos() {
         if (document.body.classList.contains('chaos-mode')) return;
         document.body.classList.add('chaos-mode');
-        const start = randomWaypoint();
+        const start = randomScreenPoint(120, 280);
         setWalkerPos(start.x, start.y, WALK_MS);
         performHeist();
         heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 420);
@@ -660,15 +676,15 @@
         window.addEventListener(ev, resetIdleTimer, { passive: true });
       });
 
-      // Keep walker transitions consistent on resize
+      // Keep walker/clones consistent on resize → exit (to avoid weirdness)
       window.addEventListener('resize', () => {
         if (!document.body.classList.contains('chaos-mode')) return;
-        const wp = randomWaypoint();
-        setWalkerPos(wp.x, wp.y, 600);
+        exitChaos();
+        resetIdleTimer();
       });
     })();
 
-    // ===== Touch shortcut: double-tap the masthead toggles Game Mode (for phones) =====
+    // ===== Touch shortcut: double-tap masthead toggles Game Mode =====
     (function() {
       const mast = document.querySelector('.nyt-masthead');
       if (!mast) return;
@@ -676,9 +692,9 @@
       mast.addEventListener('touchend', () => {
         const now = Date.now();
         if (now - lastTap < 350) {
-          const turningOn = !document.body.classList.contains('game-mode');
-          document.body.classList.toggle('game-mode', turningOn);
-          showOverlay('Game Mode: ' + (turningOn ? 'ON' : 'OFF'));
+          const on = !document.body.classList.contains('game-mode');
+          document.body.classList.toggle('game-mode', on);
+          showOverlay('Game Mode: ' + (on ? 'ON' : 'OFF'));
         }
         lastTap = now;
       });
