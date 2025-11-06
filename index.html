@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Should Video Games Be Considered a Sport? | ENG-1A Blog</title>
   <meta name="description" content="An ENG-1A blog essay presented in a New York Times–style article layout about whether esports should be considered sports." />
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Libre+Franklin:wght@300;400;500;700&family=UnifrakturCook:wght@700&family=Anton&display=swap" rel="stylesheet">
   <style>
     :root{
       --ink:#111;--muted:#666;--rule:#e5e5e5;--maxw:760px;
-      /* Extra-Crazy palette */
-      --crazy1:#ff4d4f;--crazy2:#40a9ff;--crazy3:#73d13d;
-      --crazy4:#fadb14;--crazy5:#9254de;--crazy6:#fa8c16;
+      --crazy1:#ff4d4f;--crazy2:#40a9ff;--crazy3:#73d13d;--crazy4:#fadb14;--crazy5:#9254de;--crazy6:#fa8c16;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -23,48 +20,26 @@
       overflow-x:hidden;
     }
 
-    /* NYT-ish masthead */
-    .nyt-masthead{
-      font-family:'UnifrakturCook','Old English Text MT','Lucida Blackletter',serif;
-      font-size:clamp(40px,6vw,76px);line-height:1;text-align:center;margin:22px 0 2px;letter-spacing:.4px;
-    }
-    .nyt-masthead small{
-      display:block;font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;
-      font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px;
-    }
+    /* Masthead */
+    .nyt-masthead{font-family:'UnifrakturCook','Old English Text MT','Lucida Blackletter',serif;font-size:clamp(40px,6vw,76px);line-height:1;text-align:center;margin:22px 0 2px;letter-spacing:.4px}
+    .nyt-masthead small{display:block;font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
     .wrapper{max-width:var(--maxw);margin:0 auto;padding:0 18px}
     header.article-head{text-align:left;padding:24px 0 8px}
-    .kicker{
-      font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;
-      text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-size:12px;margin-bottom:8px;
-    }
+    .kicker{font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-size:12px;margin-bottom:8px}
     h1.headline{font-weight:700;font-size:clamp(30px,5vw,48px);line-height:1.1;margin:0 0 10px}
     .deck{font-size:clamp(18px,2.4vw,22px);color:#222;font-style:italic;margin:6px 0 14px}
-    .byline{
-      font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;
-      font-size:13px;color:var(--muted);margin-bottom:18px
-    }
+    .byline{font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--muted);margin-bottom:18px}
     .byline strong{color:var(--ink);font-weight:700}
     .rule{height:1px;background:var(--rule);margin:18px 0 24px}
 
     article.story p{font-size:20px;margin:0 0 18px}
-    .article-body p:first-of-type::first-letter{
-      float:left;font-size:74px;line-height:.85;padding-right:8px;padding-top:6px;font-weight:700;
-    }
-
-    h2.section-hed{
-      font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;
-      font-weight:700;text-transform:none;font-size:clamp(18px,2.2vw,22px);
-      letter-spacing:.01em;margin:28px 0 10px;border-top:1px solid var(--rule);padding-top:18px
-    }
-
+    .article-body p:first-of-type::first-letter{float:left;font-size:74px;line-height:.85;padding-right:8px;padding-top:6px;font-weight:700}
+    h2.section-hed{font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;font-weight:700;text-transform:none;font-size:clamp(18px,2.2vw,22px);letter-spacing:.01em;margin:28px 0 10px;border-top:1px solid var(--rule);padding-top:18px}
     figure{margin:22px 0}
     figure img,figure .ph{display:block;width:100%;height:auto;border:1px solid var(--rule);background:#f9f9f9}
     .photo img{width:100%;display:block}
     .photo.two-up{display:flex;gap:1rem}
     .photo.two-up img{width:50%}
-
-    /* Meme overlay */
     .photo.meme{position:relative}
     .meme-text{
       position:absolute;left:50%;transform:translateX(-50%);width:96%;text-align:center;
@@ -74,61 +49,27 @@
     }
     .meme-text.top{top:10px}.meme-text.bottom{bottom:10px}
 
-    /* Motion-safe */
     @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
-    /* Scroll reveal */
-    .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+    .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
     .reveal.visible{opacity:1;transform:none}
 
-    /* +1 APM bubble */
-    .apm{
-      position:fixed;left:0;top:0;transform:translate(-50%,-50%);
-      font-family:'Libre Franklin',Arial,sans-serif;font-weight:700;pointer-events:none;color:#fff;
-      text-shadow:0 1px 0 #000,1px 0 0 #000,0 -1px 0 #000,-1px 0 0 #000,2px 2px 0 #000,-2px 2px 0 #000,2px -2px 0 #000,-2px -2px 0 #000;
-      animation:apm-up .9s ease-out forwards;z-index:9999
-    }
+    .apm{position:fixed;left:0;top:0;transform:translate(-50%,-50%);font-family:'Libre Franklin',Arial,sans-serif;font-weight:700;pointer-events:none;color:#fff;text-shadow:0 1px 0 #000,1px 0 0 #000,0 -1px 0 #000,-1px 0 0 #000,2px 2px 0 #000,-2px 2px 0 #000,2px -2px 0 #000,-2px -2px 0 #000;animation:apm-up .9s ease-out forwards;z-index:9999}
     @keyframes apm-up{0%{opacity:0;transform:translate(-50%,-20%) scale(.9)}10%{opacity:1}100%{opacity:0;transform:translate(-50%,-120px) scale(1.1)}}
 
-    /* GG banner */
-    .gg-overlay{
-      position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.65);color:#fff;z-index:9998;
-      font-family:'Anton',Impact,'Arial Black',sans-serif;font-size:clamp(36px,6vw,80px);letter-spacing:.5px;text-transform:uppercase;
-      animation:gg-pop .6s ease-out
-    }
+    .gg-overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.65);color:#fff;z-index:9998;font-family:'Anton',Impact,'Arial Black',sans-serif;font-size:clamp(36px,6vw,80px);letter-spacing:.5px;text-transform:uppercase;animation:gg-pop .6s ease-out}
     @keyframes gg-pop{0%{transform:scale(.92);opacity:0}100%{transform:scale(1);opacity:1}}
 
-    /* Game Mode CRT */
-    body.game-mode::before{
-      content:"";position:fixed;inset:0;pointer-events:none;z-index:9997;
-      background:
-        linear-gradient(rgba(255,255,255,.045) 50%,transparent 50%) 0 0/100% 2px,
-        radial-gradient(circle at 50% 50%,transparent 0 3px,rgba(0,0,0,.14) 3px) 0 0/6px 6px,
-        linear-gradient(90deg,rgba(0,0,0,.28),transparent 60%,rgba(0,0,0,.28)) 0 0/100% 100%;
-      opacity:.9;animation:crt-flicker 1.1s infinite ease-in-out alternate
-    }
+    /* Game Mode (unchanged) */
+    body.game-mode::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9997;background:linear-gradient(rgba(255,255,255,.045) 50%,transparent 50%) 0 0/100% 2px,radial-gradient(circle at 50% 50%,transparent 0 3px,rgba(0,0,0,.14) 3px) 0 0/6px 6px,linear-gradient(90deg,rgba(0,0,0,.28),transparent 60%,rgba(0,0,0,.28)) 0 0/100% 100%;opacity:.9;animation:crt-flicker 1.1s infinite ease-in-out alternate}
     @keyframes crt-flicker{0%{opacity:.78}100%{opacity:.92}}
-    body.game-mode::after{
-      content:"";position:fixed;inset:0;pointer-events:none;z-index:9996;
-      background:radial-gradient(ellipse at center,rgba(0,0,0,0) 40%,rgba(0,0,0,.35) 100%);mix-blend-mode:multiply
-    }
+    body.game-mode::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9996;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 40%,rgba(0,0,0,.35) 100%);mix-blend-mode:multiply}
     body.game-mode{filter:contrast(1.18) saturate(1.25) hue-rotate(6deg)}
-    body.game-mode .headline,body.game-mode .section-hed{ text-shadow:0 0 6px rgba(255,255,255,.2),0 2px 12px rgba(0,0,0,.35) }
     body.game-mode figure img{transform:scale(1.02);filter:saturate(1.25) contrast(1.08) drop-shadow(0 8px 24px rgba(0,0,0,.25));transition:transform .35s,filter .35s}
-    body.game-mode,body.game-mode *{cursor:crosshair!important}
 
-    /* Heist overlay + clones */
+    /* Heist layers + walker (unchanged base) */
     .heist-layer{position:fixed;inset:0;pointer-events:none;z-index:9995}
-    .lifted-clone{
-      position:fixed;left:0;top:0;margin:0;z-index:9995;pointer-events:none;box-shadow:0 18px 30px rgba(0,0,0,.25);
-      filter:brightness(1.03);transition:left 900ms ease,top 900ms ease,transform 900ms ease,filter 900ms ease;will-change:left,top,transform;background:white
-    }
-
-    /* Voidwalker */
-    .voidwalker{
-      position:fixed;left:0;top:0;width:120px;height:280px;z-index:9996;pointer-events:none;opacity:.96;display:none;
-      filter:drop-shadow(0 8px 16px rgba(0,0,0,.45));transform:translate(-160px,calc(100vh - 320px));transition:transform 900ms ease-in-out;will-change:transform
-    }
+    .lifted-clone{position:fixed;left:0;top:0;margin:0;z-index:9995;pointer-events:none;box-shadow:0 18px 30px rgba(0,0,0,.25);filter:brightness(1.03);transition:left 900ms ease,top 900ms ease,transform 900ms ease,filter 900ms ease;background:#fff}
+    .voidwalker{position:fixed;left:0;top:0;width:120px;height:280px;z-index:9996;pointer-events:none;opacity:.96;display:none;filter:drop-shadow(0 8px 16px rgba(0,0,0,.45));transform:translate(-160px,calc(100vh - 320px));transition:transform 900ms ease-in-out}
     body.chaos-mode .voidwalker{display:block}
     .voidwalker.carrying .vw-arm.left,.voidwalker.carrying .vw-arm.right{animation:none;transform:rotate(-22deg)!important}
     .vw-head,.vw-body,.vw-arm,.vw-leg{background:#0b0b0b}
@@ -136,79 +77,34 @@
     .vw-eyes{position:absolute;top:34px;left:50%;transform:translateX(-50%);display:flex;gap:14px}
     .vw-eye{width:14px;height:8px;background:#8a2be2;box-shadow:0 0 10px #8a2be2;border-radius:2px}
     .vw-body{width:60px;height:130px;margin:6px auto;border-radius:10px}
-    .vw-arm{width:18px;height:120px;position:absolute;top:96px;background:#0b0b0b;border-radius:8px}
+    .vw-arm{width:18px;height:120px;position:absolute;top:96px;border-radius:8px}
     .vw-arm.left{left:4px;transform-origin:top right;animation:arm-swing 2s ease-in-out infinite}
     .vw-arm.right{right:4px;transform-origin:top left;animation:arm-swing 2s ease-in-out infinite reverse}
-    .vw-leg{width:20px;height:110px;position:absolute;bottom:0;background:#0b0b0b;border-radius:8px}
+    .vw-leg{width:20px;height:110px;position:absolute;bottom:0;border-radius:8px}
     .vw-leg.left{left:28px}.vw-leg.right{right:28px}
     @keyframes arm-swing{0%,100%{transform:rotate(6deg)}50%{transform:rotate(-6deg)}}
 
-    /* Links */
     a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
     a:hover{text-decoration-thickness:2px}
-
-    /* Works Cited */
     #works-cited ol{list-style:decimal;padding-left:24px}
     #works-cited li{margin:0 0 10px}
     #works-cited li>span{display:block;padding-left:14px;text-indent:-14px}
-
     footer{color:var(--muted);font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px;text-align:center;padding:28px 0 60px;border-top:1px solid var(--rule);margin-top:36px}
 
-    /* ===== Crazy button bottom-right (always clickable) ===== */
+    /* ===== Buttons (always bottom-right in BOTH states) ===== */
     .chaos-btn{
       position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));
-      display:inline-flex;align-items:center;gap:8px;padding:12px 16px;font:700 13px/1 'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;
-      color:#fff;background:linear-gradient(135deg,var(--crazy1),var(--crazy2),var(--crazy5));border:0;border-radius:999px;box-shadow:0 10px 26px rgba(0,0,0,.28);
-      cursor:pointer;z-index:10000;transition:transform .2s,box-shadow .2s,filter .2s,opacity .2s
+      display:inline-flex;align-items:center;gap:8px;padding:12px 16px;
+      font:700 13px/1 'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;
+      color:#fff;background:linear-gradient(135deg,var(--crazy1),var(--crazy2),var(--crazy5));
+      border:0;border-radius:999px;box-shadow:0 10px 26px rgba(0,0,0,.28);cursor:pointer;z-index:10000;
+      transition:transform .2s,box-shadow .2s,filter .2s,opacity .2s
     }
     .chaos-btn:hover{transform:scale(1.06);box-shadow:0 14px 34px rgba(0,0,0,.34)}
     .chaos-btn:active{transform:scale(.98)}
     .chaos-btn[aria-pressed="true"]{background:linear-gradient(135deg,var(--crazy3),var(--crazy4),var(--crazy6));filter:saturate(1.3) contrast(1.1)}
 
-    /* ===== Party overlay (full-viewport, edge-flush, scroll-safe) ===== */
-    .party-overlay{
-      position:fixed;inset:0;pointer-events:none;z-index:9992;display:none;
-      /* Two layers: soft bloom + infinite swirl; filter softens edges (no rectangle) */
-      background:
-        radial-gradient(120% 90% at 50% 50%, rgba(255,255,255,.12) 0%, rgba(255,255,255,.04) 45%, rgba(255,255,255,0) 60%),
-        conic-gradient(from 0deg at 50% 50%, var(--crazy1), var(--crazy2), var(--crazy3), var(--crazy4), var(--crazy5), var(--crazy6), var(--crazy1));
-      mix-blend-mode:screen;
-      filter:blur(6px) saturate(1.2);
-      animation:swirl 18s linear infinite;
-      background-repeat:no-repeat;background-size:cover;
-    }
-    @keyframes swirl{to{transform:rotate(360deg)}}
-
-    /* Subtle multi-color sweep behind content (scrolls WITH page) */
-    .party-sweep{
-      position:absolute;inset:0;pointer-events:none;z-index:-1;
-      background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.06) 20%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.06) 80%, rgba(255,255,255,0) 100%);
-    }
-
-    /* Confetti */
-    .party-confetti{position:fixed;inset:0;pointer-events:none;z-index:9991}
-    .confetti{
-      position:fixed;top:-10px;width:8px;height:12px;opacity:.95;will-change:transform,opacity;transform:translateY(-10px) rotate(0);border-radius:2px;
-      animation:confettiFall var(--t,6s) linear forwards, confettiSpin var(--t2,2s) ease-in-out infinite alternate
-    }
-    @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:.98}}
-    @keyframes confettiSpin{0%{border-radius:2px}100%{border-radius:6px}}
-
-    /* Global hue pulse */
-    body.party-mode{animation:hueCycle 6s linear infinite}
-    @keyframes hueCycle{0%{filter:hue-rotate(0) saturate(1.2)}50%{filter:hue-rotate(180deg) saturate(1.6)}100%{filter:hue-rotate(360deg) saturate(1.2)}}
-
-    /* Party elements */
-    .party-elt{--d1:2.2s;--d2:3.2s;--d3:4.5s;--amp:16px;transform-origin:50% 50%;animation:wobble var(--d2) ease-in-out infinite alternate, floaty var(--d3) ease-in-out infinite;will-change:transform,filter}
-    .party-elt.spin{animation:spinZ var(--d1) linear infinite, wobble var(--d2) ease-in-out infinite alternate, floaty var(--d3) ease-in-out infinite}
-    .party-elt.flip{animation:spinY var(--d1) linear infinite, floaty var(--d3) ease-in-out infinite, pulseGlow 1.8s ease-in-out infinite alternate}
-    @keyframes spinZ{to{transform:rotate(360deg)}}
-    @keyframes spinY{to{transform:rotateY(360deg)}}
-    @keyframes wobble{0%{transform:translateX(calc(var(--amp)*-1)) rotate(-3deg)}100%{transform:translateX(var(--amp)) rotate(3deg)}}
-    @keyframes floaty{0%{transform:translateY(calc(var(--amp)*-1))}100%{transform:translateY(var(--amp))}}
-    @keyframes pulseGlow{0%{filter:drop-shadow(0 6px 16px rgba(0,0,0,.25)) brightness(1)}100%{filter:drop-shadow(0 12px 28px rgba(0,0,0,.35)) brightness(1.2)}}
-
-    /* Disco ball (top-center) */
+    /* ===== Disco ball ===== */
     .disco{position:fixed;left:50%;top:0;transform:translate(-50%,-28%);z-index:9993;display:none;pointer-events:none}
     body.party-mode .disco{display:block;animation:discoBob 2s ease-in-out infinite alternate}
     @keyframes discoBob{0%{transform:translate(-50%,-30%)}100%{transform:translate(-50%,-18%)}}
@@ -222,35 +118,76 @@
       position:relative;overflow:hidden;animation:ballSpin 6s linear infinite
     }
     @keyframes ballSpin{to{transform:rotate(360deg)}}
-    .disco .beam{
-      position:absolute;left:50%;top:100%;width:18px;height:40vh;transform:translateX(-50%);background:linear-gradient(to bottom, rgba(255,255,255,.9), rgba(255,255,255,0));
-      filter:blur(1px);mix-blend-mode:screen;opacity:.7;animation:beamSway 4s ease-in-out infinite alternate
-    }
+    .disco .beam{position:absolute;left:50%;top:100%;width:18px;height:40vh;transform:translateX(-50%);background:linear-gradient(to bottom, rgba(255,255,255,.9), rgba(255,255,255,0));filter:blur(1px);mix-blend-mode:screen;opacity:.7;animation:beamSway 4s ease-in-out infinite alternate}
     @keyframes beamSway{0%{transform:translateX(-50%) rotate(-8deg)}100%{transform:translateX(-50%) rotate(8deg)}}
-    .disco .spark{
-      position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff,0 0 20px #fff;
-      animation:sparkle 1.6s linear infinite
-    }
+    .disco .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff,0 0 20px #fff;animation:sparkle 1.6s linear infinite}
     @keyframes sparkle{0%,100%{opacity:.2}50%{opacity:1}}
 
-    /* Print */
+    /* ===== Full-page color background (giant circular swirl) ===== */
+    .party-bg{
+      position:fixed;left:50%;top:50%;
+      width:220vmax;height:220vmax; /* much larger than viewport to avoid edges */
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:
+        conic-gradient(from 0deg, var(--crazy1), var(--crazy2), var(--crazy3), var(--crazy4), var(--crazy5), var(--crazy6), var(--crazy1));
+      filter:blur(40px) saturate(1.4) brightness(1.1);
+      opacity:.55; pointer-events:none; z-index:0; display:none;
+      animation:partySpin 18s linear infinite;
+    }
+    @keyframes partySpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+    /* Global hue cycle for EVERYTHING when party-mode */
+    body.party-mode{animation:hueCycle 6s linear infinite}
+    @keyframes hueCycle{0%{filter:hue-rotate(0) saturate(1.2)}50%{filter:hue-rotate(180deg) saturate(1.6)}100%{filter:hue-rotate(360deg) saturate(1.2)}}
+
+    /* Confetti */
+    .party-confetti{position:fixed;inset:0;pointer-events:none;z-index:9992}
+
+    .confetti{
+      position:fixed;top:-10px;width:8px;height:12px;opacity:.95;will-change:transform,opacity;transform:translateY(-10px) rotate(0);border-radius:2px;
+      animation:confettiFall var(--t,6s) linear forwards, confettiSpin var(--t2,2s) ease-in-out infinite alternate
+    }
+    @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:.98}}
+    @keyframes confettiSpin{0%{border-radius:2px}100%{border-radius:6px}}
+
+    /* ===== SPIN EVERYTHING: single transform animation so rotation is guaranteed ===== */
+    .party-elt{
+      --spd: 2.4s;               /* rotation speed */
+      --ampX: 8px; --ampY: 8px;  /* tiny drift so it feels alive */
+      transform-origin: 50% 50%;
+      animation: spin360 var(--spd) linear infinite;
+      will-change: transform, filter;
+    }
+    .party-elt.spin3d{ animation: spin3d var(--spd) linear infinite }
+
+    @keyframes spin360{
+      0%   { transform: translate(0,0) rotate(0deg)    scale(1) }
+      50%  { transform: translate(var(--ampX), calc(-1 * var(--ampY))) rotate(180deg) scale(1.03) }
+      100% { transform: translate(0,0) rotate(360deg)  scale(1) }
+    }
+    @keyframes spin3d{
+      0%   { transform: translate(0,0) rotate(0deg) rotateY(0deg)   }
+      50%  { transform: translate(var(--ampX), calc(-1 * var(--ampY))) rotate(180deg) rotateY(180deg) }
+      100% { transform: translate(0,0) rotate(360deg) rotateY(360deg) }
+    }
+
     @media print{
-      .rule,.chaos-btn,.party-overlay,.party-confetti,.disco{display:none!important}
+      .rule,.chaos-btn,.party-confetti,.party-bg,.disco{display:none!important}
       a[href^="http"]::after{content:" (" attr(href) ")";font-size:10px;color:#999}
       body{color:#000;animation:none!important;filter:none!important}
     }
   </style>
 </head>
 <body>
-
   <div class="nyt-masthead">The Esports Times<small>ENG-1A • Opinion</small></div>
 
-  <!-- CRAZY BUTTON -->
+  <!-- Toggle button (works anywhere in both states) -->
   <button class="chaos-btn" type="button" aria-pressed="false" aria-label="Toggle Extra Crazy Mode">
     <span class="btn-emoji">☄️</span> <span class="btn-text">Crazy</span>
   </button>
 
-  <!-- Disco ball -->
+  <!-- Disco + full-page color background + confetti -->
   <div class="disco" aria-hidden="true">
     <div class="ball">
       <div class="spark" style="left:20px;top:24px;animation-delay:.1s"></div>
@@ -260,16 +197,10 @@
     </div>
     <div class="beam"></div>
   </div>
-
-  <!-- Full-viewport color swirl (fixed) -->
-  <div class="party-overlay" aria-hidden="true"></div>
-  <!-- Confetti layer (fixed) -->
+  <div class="party-bg" aria-hidden="true"></div>
   <div class="party-confetti" aria-hidden="true"></div>
 
   <div class="wrapper">
-    <!-- a subtle sweep that scrolls WITH the content so the glow isn't only at top -->
-    <div class="party-sweep" aria-hidden="true"></div>
-
     <header class="article-head" role="banner">
       <div class="kicker">Sports & Culture</div>
       <h1 class="headline">Should Video Games Be Considered a Sport?</h1>
@@ -303,7 +234,10 @@
           <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Yongsan_esports_stadium.jpg" alt="Pro players practicing on stage at Yongsan Esports Stadium" loading="lazy">
           <figcaption>
             Pro players train up to 10 hours a day, just like traditional athletes.
-            <br><small>Photo: <a href="https://commons.wikimedia.org/wiki/File:Yongsan_esports_stadium.jpg" target="_blank" rel="noopener">Yongsan Esports Stadium</a> by Altostratus, licensed <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>.</small>
+            <br><small>Photo:
+            <a href="https://commons.wikimedia.org/wiki/File:Yongsan_esports_stadium.jpg" target="_blank" rel="noopener">Yongsan Esports Stadium</a>
+            by Altostratus, licensed
+            <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>.</small>
           </figcaption>
         </figure>
 
@@ -313,7 +247,9 @@
           <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/League_of_Legends_World_Championship_2017_Finals.jpg" alt="Esports arena with central stage during world championship" loading="lazy">
           <figcaption>
             Esports tournaments now fill stadiums worldwide.
-            <br><small>Photo: <a href="https://commons.wikimedia.org/wiki/File:League_of_Legends_World_Championship_2017_Finals.jpg" target="_blank" rel="noopener">Richard Ye</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a>.</small>
+            <br><small>Photo:
+            <a href="https://commons.wikimedia.org/wiki/File:League_of_Legends_World_Championship_2017_Finals.jpg" target="_blank" rel="noopener">Richard Ye</a>,
+            licensed <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a>.</small>
           </figcaption>
         </figure>
 
@@ -328,7 +264,9 @@
           <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/IEM_Katowice_Major_2019.jpg" alt="Fans cheering at IEM Katowice Major 2019" loading="lazy">
           <figcaption>
             Esports fans show the same passion as traditional sports audiences.
-            <br><small>Photo: <a href="https://commons.wikimedia.org/wiki/File:IEM_Katowice_Major_2019.jpg" target="_blank" rel="noopener">Esports Kingdom</a>, licensed <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>.</small>
+            <br><small>Photo:
+            <a href="https://commons.wikimedia.org/wiki/File:IEM_Katowice_Major_2019.jpg" target="_blank" rel="noopener">Esports Kingdom</a>,
+            licensed <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>.</small>
           </figcaption>
         </figure>
 
@@ -340,8 +278,12 @@
           <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/League_of_Legends_World_Championship_2017_Finals.jpg" alt="Esports arena during the 2017 League of Legends World Championship" loading="lazy">
           <figcaption>
             The definition of sport is evolving in the digital age.
-            <br><small>Left: <a href="https://commons.wikimedia.org/wiki/File:Levisstadium.jpg" target="_blank" rel="noopener">Levi’s Stadium</a> by Travis Wise, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>. Right:
-            <a href="https://commons.wikimedia.org/wiki/File:League_of_Legends_World_Championship_2017_Finals.jpg" target="_blank" rel="noopener">Worlds 2017 Finals</a> by Richard Ye, <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a>.</small>
+            <br><small>Left:
+            <a href="https://commons.wikimedia.org/wiki/File:Levisstadium.jpg" target="_blank" rel="noopener">Levi’s Stadium</a>
+            by Travis Wise, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0</a>.
+            Right:
+            <a href="https://commons.wikimedia.org/wiki/File:League_of_Legends_World_Championship_2017_Finals.jpg" target="_blank" rel="noopener">Worlds 2017 Finals</a>
+            by Richard Ye, <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a>.</small>
           </figcaption>
         </figure>
 
@@ -373,11 +315,9 @@
   </div>
 
   <script>
-    // Start Game Mode OFF
-    document.body.classList.remove('game-mode');
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Reveal
+    /* Reveal */
     (function(){
       const targets=document.querySelectorAll('.headline,.deck,.section-hed,figure,#works-cited');
       const io=new IntersectionObserver(es=>{
@@ -386,7 +326,7 @@
       targets.forEach(el=>{el.classList.add('reveal'); io.observe(el);});
     })();
 
-    // +1 APM
+    /* +1 APM click bubble */
     (function(){
       const story=document.querySelector('article.story'); if(!story) return;
       story.addEventListener('click',e=>{
@@ -395,148 +335,126 @@
       });
     })();
 
-    function showOverlay(text){
-      const o=document.createElement('div'); o.className='gg-overlay'; o.setAttribute('role','status'); o.setAttribute('aria-live','polite'); o.textContent=text;
-      document.body.appendChild(o); setTimeout(()=>o.remove(),1400);
-    }
+    function showOverlay(t){const o=document.createElement('div');o.className='gg-overlay';o.role='status';o.setAttribute('aria-live','polite');o.textContent=t;document.body.appendChild(o);setTimeout(()=>o.remove(),1400)}
 
-    // GG on double-G
+    /* GG on double-G */
+    (function(){let g=0,t;addEventListener('keydown',e=>{if(e.key.toLowerCase()!=='g')return;g++;clearTimeout(t);t=setTimeout(()=>g=0,550);if(g>=2){g=0;showOverlay('GG')}})})();
+
+    /* Konami toggles Game Mode */
     (function(){
-      let g=0,t; window.addEventListener('keydown',e=>{
-        if(e.key.toLowerCase()!=='g') return; g++; clearTimeout(t); t=setTimeout(()=>g=0,550); if(g>=2){g=0; showOverlay('GG');}
+      const combo=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let i=0;
+      addEventListener('keydown',e=>{
+        const k=e.key.length===1?e.key.toLowerCase():e.key;const need=combo[i].length===1?combo[i].toLowerCase():combo[i];
+        if(k===need){i++;if(i===combo.length){i=0;const on=!document.body.classList.contains('game-mode');document.body.classList.toggle('game-mode',on);showOverlay('Game Mode: '+(on?'ON':'OFF'));}}
+        else{const first=combo[0];const fk=first.length===1?first.toLowerCase():first;i=(k===fk)?1:0;}
       });
     })();
 
-    // Konami toggles Game Mode
-    (function(){
-      const combo=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']; let i=0;
-      window.addEventListener('keydown',e=>{
-        const k=e.key.length===1?e.key.toLowerCase():e.key; const n=combo[i].length===1?combo[i].toLowerCase():combo[i];
-        if(k===n){ i++; if(i===combo.length){ i=0; const on=!document.body.classList.contains('game-mode'); document.body.classList.toggle('game-mode',on); showOverlay('Game Mode: '+(on?'ON':'OFF')); } }
-        else { const first=combo[0]; const fk=first.length===1?first.toLowerCase():first; i=(k===fk)?1:0; }
-      });
-    })();
-
-    // Game Mode mouse trail
+    /* Game Mode mouse trail */
     (function(){
       let enabled=false,onMove;
-      function dot(x,y){
-        const d=document.createElement('div'); d.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 10px rgba(255,255,255,.9),0 0 24px rgba(120,120,255,.6);z-index:9999;pointer-events:none;opacity:.95;transition:transform .6s,opacity .6s';
-        document.body.appendChild(d); requestAnimationFrame(()=>{d.style.transform='translateY(-20px) scale(.5)'; d.style.opacity=0;}); setTimeout(()=>d.remove(),650);
-      }
-      function attach(){ if(enabled) return; enabled=true; onMove=e=>document.body.classList.contains('game-mode')&&dot(e.clientX,e.clientY); window.addEventListener('mousemove',onMove,{passive:true}); }
-      function detach(){ if(!enabled) return; enabled=false; window.removeEventListener('mousemove',onMove); }
-      const obs=new MutationObserver(()=>{ document.body.classList.contains('game-mode')?attach():detach(); });
-      obs.observe(document.body,{attributes:true,attributeFilter:['class']});
-      if(document.body.classList.contains('game-mode')) attach();
+      function dot(x,y){const d=document.createElement('div');d.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 10px rgba(255,255,255,.9),0 0 24px rgba(120,120,255,.6);z-index:9999;pointer-events:none;opacity:.95;transition:transform .6s,opacity .6s';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform='translateY(-20px) scale(.5)';d.style.opacity=0;});setTimeout(()=>d.remove(),650);}
+      function attach(){if(enabled)return;enabled=true;onMove=e=>document.body.classList.contains('game-mode')&&dot(e.clientX,e.clientY);addEventListener('mousemove',onMove,{passive:true});}
+      function detach(){if(!enabled)return;enabled=false;removeEventListener('mousemove',onMove);}
+      const obs=new MutationObserver(()=>{document.body.classList.contains('game-mode')?attach():detach();});obs.observe(document.body,{attributes:true,attributeFilter:['class']});if(document.body.classList.contains('game-mode'))attach();
     })();
 
-    // Idle Chaos: voidwalker heist (nearest visible; drop near walker)
+    /* Idle Chaos: walker heist (as before) */
     (function(){
-      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
       const IDLE_MS=8000,WALK_MS=900,CARRY_MS=900,PAD=24,VIS_MIN=.55,NEAR_RAD=420,DROP_RAD=240;
-      const walker=document.querySelector('.voidwalker'); const layer=document.querySelector('.heist-layer');
-      let idleTimer=null,heistTimer=null; let carrying=null; const clones=new Map();
+      const walker=document.querySelector('.voidwalker');const layer=document.querySelector('.heist-layer');
+      let idleTimer=null,heistTimer=null,carrying=null;const clones=new Map();
       function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
       function vwRect(){return walker.getBoundingClientRect()}
-      function setWalkerPos(x,y,d=WALK_MS){walker.style.transition=`transform ${d}ms ease-in-out`; walker.style.transform=`translate(${x}px,${y}px)`}
-      function visRatio(r){const vx0=0,vy0=0,vx1=innerWidth,vy1=innerHeight; const ix0=Math.max(r.left,vx0),iy0=Math.max(r.top,vy0),ix1=Math.min(r.right,vx1),iy1=Math.min(r.bottom,vy1); const iw=Math.max(0,ix1-ix0),ih=Math.max(0,iy1-iy0); return (iw*ih)/Math.max(1,r.width*r.height)}
-      function nearPoint(r){return {x:clamp(r.left+r.width*.5-60,8,innerWidth-128), y:clamp(r.top+r.height*.3-160,8,innerHeight-200)}}
-      function rndPoint(w=120,h=120,around){ if(around){const j=()=> (Math.random()*2-1); return {x:clamp(around.x+j()*DROP_RAD,PAD,innerWidth-w-PAD), y:clamp(around.y+j()*DROP_RAD,PAD,innerHeight-h-PAD)} } return {x:clamp(Math.random()*(innerWidth-w-PAD*2)+PAD,PAD,innerWidth-w-PAD), y:clamp(Math.random()*(innerHeight-h-PAD*2)+PAD,PAD,innerHeight-h-PAD)} }
-      function candidates(){
-        const els=[...document.querySelectorAll('.headline,.deck,.section-hed,figure')].filter(el=>el.offsetParent);
-        const vh=innerHeight;
-        return els.filter(el=>{const r=el.getBoundingClientRect(); const v=visRatio(r); const cy=(r.top+r.bottom)/2; const band=cy>vh*.12&&cy<vh*.88; return v>=VIS_MIN&&band&&r.height>40&&r.width>80});
-      }
-      function nearest(els){const h={x:vwRect().left+60,y:vwRect().top+140}; let best=null,b=1/0; for(const el of els){const r=el.getBoundingClientRect(); const cx=r.left+r.width/2,cy=r.top+r.height/2; const d2=(cx-h.x)**2+(cy-h.y)**2; if(d2<b){b=d2;best={el,d2,rect:r}}} return best;}
-      function ensureClone(el){ if(clones.has(el)) return clones.get(el); const r=el.getBoundingClientRect(); const c=el.cloneNode(true); c.classList.add('lifted-clone'); c.style.width=r.width+'px'; c.style.left=r.left+'px'; c.style.top=r.top+'px'; c.style.transform=`rotate(${(Math.random()*10-5).toFixed(1)}deg)`; layer.appendChild(c); el.style.visibility='hidden'; clones.set(el,c); return c; }
-      function moveClone(c,x,y,d=CARRY_MS){c.style.transitionDuration=d+'ms'; c.style.left=x+'px'; c.style.top=y+'px'}
-      function pickUp(el){const c=ensureClone(el); const cr=c.getBoundingClientRect(); const h={x:vwRect().left+60,y:vwRect().top+140}; const x=clamp(h.x-cr.width/2,24,innerWidth-cr.width-24), y=clamp(h.y-cr.height*.6,24,innerHeight-cr.height-24); moveClone(c,x,y); walker.classList.add('carrying'); carrying={el,clone:c};}
-      function dropNear(){ if(!carrying) return; const {clone:c}=carrying; const cr=c.getBoundingClientRect(); const h={x:vwRect().left+60,y:vwRect().top+140}; const drop=rndPoint(cr.width,cr.height,h); const near={x:clamp(drop.x-60+cr.width/2,8,innerWidth-128), y:clamp(drop.y-160+cr.height*.3,8,innerHeight-200)}; setWalkerPos(near.x,near.y,CARRY_MS); moveClone(c,drop.x,drop.y,CARRY_MS); setTimeout(()=>{walker.classList.remove('carrying'); carrying=null;},CARRY_MS+40); }
-      function heist(){ if(carrying){dropNear(); return;} const pool=candidates(); if(!pool.length){ const m={x:innerWidth/2,y:innerHeight/2}; const p=rndPoint(120,280,m); setWalkerPos(p.x,p.y,WALK_MS); return; } const pick=nearest(pool); if(!pick) return; const dist=Math.sqrt(pick.d2); const n=nearPoint(pick.rect); setWalkerPos(n.x,n.y,WALK_MS); setTimeout(()=>{ if(!document.body.classList.contains('chaos-mode')) return; pickUp(pick.el); }, dist>NEAR_RAD?WALK_MS+120:120); }
-      function clearState(){ clones.forEach((c,el)=>{c.remove(); el.style.visibility='';}); clones.clear(); walker.classList.remove('carrying'); carrying=null; }
-      function enter(){ if(document.body.classList.contains('chaos-mode')) return; document.body.classList.add('chaos-mode'); const start={x:innerWidth/2-60,y:innerHeight*.75-160}; setWalkerPos(start.x,start.y,WALK_MS); heist(); heistTimer=setInterval(heist,WALK_MS+CARRY_MS+520); }
-      function exit(){ clearInterval(heistTimer); heistTimer=null; clearState(); document.body.classList.remove('chaos-mode'); }
-      function reset(){ clearTimeout(idleTimer); if(document.body.classList.contains('chaos-mode')) exit(); idleTimer=setTimeout(enter,IDLE_MS); }
-      reset(); ['mousemove','mousedown','keydown','touchstart','scroll','wheel'].forEach(ev=>window.addEventListener(ev,reset,{passive:true}));
-      addEventListener('resize',()=>{ if(document.body.classList.contains('chaos-mode')){ exit(); reset(); }});
+      function setWalkerPos(x,y,d=WALK_MS){walker.style.transition=`transform ${d}ms ease-in-out`;walker.style.transform=`translate(${x}px,${y}px)`}
+      function visRatio(r){const vx0=0,vy0=0,vx1=innerWidth,vy1=innerHeight;const ix0=Math.max(r.left,vx0),iy0=Math.max(r.top,vy0),ix1=Math.min(r.right,vx1),iy1=Math.min(r.bottom,vy1);const iw=Math.max(0,ix1-ix0),ih=Math.max(0,iy1-iy0);return (iw*ih)/Math.max(1,r.width*r.height)}
+      function nearPoint(r){return {x:clamp(r.left+r.width*.5-60,8,innerWidth-128),y:clamp(r.top+r.height*.3-160,8,innerHeight-200)}}
+      function rndPoint(w=120,h=120,around){if(around){const j=()=>Math.random()*2-1;return {x:clamp(around.x+j()*DROP_RAD,PAD,innerWidth-w-PAD),y:clamp(around.y+j()*DROP_RAD,PAD,innerHeight-h-PAD)}}return {x:clamp(Math.random()*(innerWidth-w-PAD*2)+PAD,PAD,innerWidth-w-PAD),y:clamp(Math.random()*(innerHeight-h-PAD*2)+PAD,PAD,innerHeight-h-PAD)}}
+      function candidates(){const els=[...document.querySelectorAll('.headline,.deck,.section-hed,figure')].filter(el=>el.offsetParent);const vh=innerHeight;return els.filter(el=>{const r=el.getBoundingClientRect();const v=visRatio(r);const cy=(r.top+r.bottom)/2;const band=cy>vh*.12&&cy<vh*.88;return v>=VIS_MIN&&band&&r.height>40&&r.width>80});}
+      function nearest(els){const h={x:vwRect().left+60,y:vwRect().top+140};let best=null,b=1/0;for(const el of els){const r=el.getBoundingClientRect();const cx=r.left+r.width/2,cy=r.top+r.height/2;const d2=(cx-h.x)**2+(cy-h.y)**2;if(d2<b){b=d2;best={el,d2,rect:r}}}return best;}
+      function ensureClone(el){if(clones.has(el))return clones.get(el);const r=el.getBoundingClientRect();const c=el.cloneNode(true);c.className='lifted-clone';c.style.width=r.width+'px';c.style.left=r.left+'px';c.style.top=r.top+'px';c.style.transform=`rotate(${(Math.random()*10-5).toFixed(1)}deg)`;layer.appendChild(c);el.style.visibility='hidden';clones.set(el,c);return c;}
+      function moveClone(c,x,y,d=CARRY_MS){c.style.transitionDuration=d+'ms';c.style.left=x+'px';c.style.top=y+'px'}
+      function pickUp(el){const c=ensureClone(el);const cr=c.getBoundingClientRect();const h={x:vwRect().left+60,y:vwRect().top+140};const x=Math.max(24,Math.min(innerWidth-cr.width-24,h.x-cr.width/2)),y=Math.max(24,Math.min(innerHeight-cr.height-24,h.y-cr.height*.6));moveClone(c,x,y);walker.classList.add('carrying');carrying={el,clone:c};}
+      function dropNear(){if(!carrying)return;const {clone:c}=carrying;const cr=c.getBoundingClientRect();const h={x:vwRect().left+60,y:vwRect().top+140};const drop=rndPoint(cr.width,cr.height,h);const near={x:Math.max(8,Math.min(innerWidth-128,drop.x-60+cr.width/2)),y:Math.max(8,Math.min(innerHeight-200,drop.y-160+cr.height*.3))};setWalkerPos(near.x,near.y,CARRY_MS);moveClone(c,drop.x,drop.y,CARRY_MS);setTimeout(()=>{walker.classList.remove('carrying');carrying=null;},CARRY_MS+40);}
+      function heist(){if(carrying){dropNear();return}const pool=candidates();if(!pool.length){const m={x:innerWidth/2,y:innerHeight/2};const p=rndPoint(120,280,m);setWalkerPos(p.x,p.y,WALK_MS);return}const pick=nearest(pool);if(!pick)return;const dist=Math.sqrt(pick.d2);const n=nearPoint(pick.rect);setWalkerPos(n.x,n.y,WALK_MS);setTimeout(()=>{if(!document.body.classList.contains('chaos-mode'))return;pickUp(pick.el);},dist>NEAR_RAD?WALK_MS+120:120);}
+      function clearState(){clones.forEach((c,el)=>{c.remove();el.style.visibility=''});clones.clear();walker.classList.remove('carrying');carrying=null;}
+      function enter(){if(document.body.classList.contains('chaos-mode'))return;document.body.classList.add('chaos-mode');const start={x:innerWidth/2-60,y:innerHeight*.75-160};setWalkerPos(start.x,start.y,WALK_MS);heist();heistTimer=setInterval(heist,WALK_MS+CARRY_MS+520);}
+      function exit(){clearInterval(heistTimer);heistTimer=null;clearState();document.body.classList.remove('chaos-mode');}
+      function reset(){clearTimeout(idleTimer);if(document.body.classList.contains('chaos-mode'))exit();idleTimer=setTimeout(enter,IDLE_MS);}
+      reset();['mousemove','mousedown','keydown','touchstart','scroll','wheel'].forEach(ev=>addEventListener(ev,reset,{passive:true}));addEventListener('resize',()=>{if(document.body.classList.contains('chaos-mode')){exit();reset();}});
     })();
 
-    // ===== Extra Crazy Mode =====
+    /* ===== Extra Crazy Mode ===== */
     (function(){
       const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const btn=document.querySelector('.chaos-btn');
-      const overlay=document.querySelector('.party-overlay');
+      const bg=document.querySelector('.party-bg');
       const confetti=document.querySelector('.party-confetti');
+      const disco=document.querySelector('.disco');
 
       let confettiTimer=null;
-      let partyTargets=[];
+      let targets=[];
 
       function rand(min,max){return Math.random()*(max-min)+min}
       function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
 
-      function burst(count=28){
+      function burst(count=30){
         const colors=['var(--crazy1)','var(--crazy2)','var(--crazy3)','var(--crazy4)','var(--crazy5)','var(--crazy6)'];
         for(let i=0;i<count;i++){
-          const c=document.createElement('div'); c.className='confetti';
+          const c=document.createElement('div');c.className='confetti';
           c.style.left=(Math.random()*innerWidth)+'px';
           c.style.background=pick(colors);
           c.style.transform=`translateY(-10px) rotate(${Math.floor(rand(-45,45))}deg)`;
-          c.style.setProperty('--t',`${rand(4,7)}s`); c.style.setProperty('--t2',`${rand(1.2,2.4)}s`);
-          confetti.appendChild(c); setTimeout(()=>c.remove(),8000);
+          c.style.setProperty('--t',`${rand(4,7)}s`);c.style.setProperty('--t2',`${rand(1.2,2.4)}s`);
+          confetti.appendChild(c);setTimeout(()=>c.remove(),8000);
         }
       }
-      function startConfetti(){ burst(60); confettiTimer=setInterval(()=>burst(20),380) }
-      function stopConfetti(){ clearInterval(confettiTimer); confettiTimer=null; confetti.querySelectorAll('.confetti').forEach(n=>n.remove()) }
+      function startConfetti(){burst(60);confettiTimer=setInterval(()=>burst(20),380)}
+      function stopConfetti(){clearInterval(confettiTimer);confettiTimer=null;confetti.querySelectorAll('.confetti').forEach(n=>n.remove())}
 
       function applyParty(){
-        // Go big: target most visible content to spin/flip/float
-        const scoped = document.querySelectorAll(`
-          header.article-head *, .nyt-masthead,
-          article.story *:not(script):not(style),
-          footer *
-        `);
-        partyTargets = Array.from(scoped);
-        partyTargets.forEach(el=>{
+        // Spin basically everything in the article & header/footer
+        targets = Array.from(document.querySelectorAll(`
+          .nyt-masthead, header.article-head *, article.story *:not(script):not(style), footer *
+        `));
+        targets.forEach(el=>{
           el.classList.add('party-elt');
-          el.style.setProperty('--d1', `${rand(1.0, 2.2)}s`);
-          el.style.setProperty('--d2', `${rand(1.2, 2.4)}s`);
-          el.style.setProperty('--d3', `${rand(3.0, 5.0)}s`);
-          el.style.setProperty('--amp', `${Math.floor(rand(10, 24))}px`);
-          if(Math.random()<0.55) el.classList.add('spin');
-          if(Math.random()<0.35) el.classList.add('flip');
+          // randomize speed & tiny drift so not all sync
+          el.style.setProperty('--spd', `${rand(1.2, 3.0)}s`);
+          el.style.setProperty('--ampX', `${Math.floor(rand(-10, 10))}px`);
+          el.style.setProperty('--ampY', `${Math.floor(rand(  0, 14))}px`);
+          if (Math.random() < 0.45) el.classList.add('spin3d');
         });
       }
       function clearParty(){
-        partyTargets.forEach(el=>{
-          el.classList.remove('party-elt','spin','flip');
-          el.style.removeProperty('--d1'); el.style.removeProperty('--d2'); el.style.removeProperty('--d3'); el.style.removeProperty('--amp');
+        targets.forEach(el=>{
+          el.classList.remove('party-elt','spin3d');
+          el.style.removeProperty('--spd');el.style.removeProperty('--ampX');el.style.removeProperty('--ampY');
         });
-        partyTargets=[];
+        targets=[];
       }
 
       function toggleParty(force){
-        if(reduce){ showOverlay('Animations disabled (Reduce Motion)'); return; }
-        const on = (typeof force==='boolean') ? force : !document.body.classList.contains('party-mode');
-        document.body.classList.toggle('party-mode', on);
+        if(reduce){showOverlay('Animations disabled (Reduce Motion)');return;}
+        const on=(typeof force==='boolean')?force:!document.body.classList.contains('party-mode');
+        document.body.classList.toggle('party-mode',on);
         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
         btn.querySelector('.btn-emoji').textContent = on ? '🛑' : '☄️';
         btn.querySelector('.btn-text').textContent  = on ? 'Calm' : 'Crazy';
-        overlay.style.display = on ? 'block' : 'none';
+        bg.style.display = on ? 'block' : 'none';
+        disco.style.display = on ? 'block' : 'none';
 
-        if(on){ applyParty(); startConfetti(); }
-        else { clearParty(); stopConfetti(); }
+        if(on){applyParty();startConfetti();}
+        else {clearParty();stopConfetti();}
       }
 
       btn.addEventListener('click',()=>toggleParty());
-      window.addEventListener('keydown',e=>{ if(e.key.toLowerCase()==='c' && !e.ctrlKey && !e.metaKey && !e.altKey){ toggleParty(); }});
+      addEventListener('keydown',e=>{if(e.key.toLowerCase()==='c' && !e.ctrlKey && !e.metaKey && !e.altKey){toggleParty();}});
     })();
 
-    // Double-tap masthead toggles Game Mode
-    (function(){
-      const mast=document.querySelector('.nyt-masthead'); if(!mast) return; let t=0;
-      mast.addEventListener('touchend',()=>{ const now=Date.now(); if(now-t<350){ const on=!document.body.classList.contains('game-mode'); document.body.classList.toggle('game-mode',on); showOverlay('Game Mode: '+(on?'ON':'OFF')); } t=now; });
-    })();
+    /* Double-tap masthead toggles Game Mode (mobile) */
+    (function(){const m=document.querySelector('.nyt-masthead');if(!m)return;let t=0;m.addEventListener('touchend',()=>{const n=Date.now();if(n-t<350){const on=!document.body.classList.contains('game-mode');document.body.classList.toggle('game-mode',on);showOverlay('Game Mode: '+(on?'ON':'OFF'));}t=n;});})();
   </script>
 </body>
 </html>
