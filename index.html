@@ -13,6 +13,14 @@
       --muted: #666;
       --rule: #e5e5e5;
       --maxw: 760px; /* NYT article column width ~700–800px */
+
+      /* Extra-Crazy palette */
+      --crazy1: #ff4d4f;
+      --crazy2: #40a9ff;
+      --crazy3: #73d13d;
+      --crazy4: #fadb14;
+      --crazy5: #9254de;
+      --crazy6: #fa8c16;
     }
 
     * { box-sizing: border-box; }
@@ -25,6 +33,7 @@
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
+      overflow-x: hidden; /* keep wild transforms from adding horizontal scrollbars */
     }
 
     /* NYT-like blackletter masthead */
@@ -170,7 +179,7 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* --- Game Mode: visible CRT vibe --- */
+    /* --- Game Mode visuals --- */
     body.game-mode::before {
       content: "";
       position: fixed; inset: 0; pointer-events: none; z-index: 9997;
@@ -251,11 +260,110 @@
     /* Footer */
     footer { color: var(--muted); font-family: 'Libre Franklin', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 12px; text-align: center; padding: 28px 0 60px; border-top: 1px solid var(--rule); margin-top: 36px; }
 
+    /* ===== Extra Crazy Mode toggle button ===== */
+    .chaos-btn {
+      position: fixed;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      font: 700 13px/1 'Libre Franklin', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(135deg, var(--crazy1), var(--crazy2), var(--crazy5));
+      border: none; border-radius: 999px;
+      box-shadow: 0 8px 22px rgba(0,0,0,.25);
+      cursor: pointer; z-index: 9999;
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .chaos-btn:hover { transform: translateY(-50%) scale(1.06); box-shadow: 0 10px 28px rgba(0,0,0,.3); }
+    .chaos-btn:active { transform: translateY(-50%) scale(0.98); }
+    .chaos-btn[aria-pressed="true"] {
+      background: linear-gradient(135deg, var(--crazy3), var(--crazy4), var(--crazy6));
+      filter: saturate(1.3) contrast(1.1);
+    }
+
+    /* ===== Extra Crazy Mode visuals ===== */
+    .party-overlay {
+      position: fixed; inset: 0; pointer-events: none;
+      z-index: 9992; display: none; opacity: .35;
+      background:
+        radial-gradient(60% 90% at 50% 10%, rgba(255,255,255,.0) 0%, rgba(255,255,255,.25) 60%, rgba(255,255,255,.0) 100%),
+        conic-gradient(from 0deg, var(--crazy1), var(--crazy2), var(--crazy3), var(--crazy4), var(--crazy5), var(--crazy6), var(--crazy1));
+      mix-blend-mode: screen;
+      animation: spinOverlay 12s linear infinite;
+    }
+    @keyframes spinOverlay { to { transform: rotate(360deg) } }
+
+    .party-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9991; }
+
+    .confetti {
+      position: fixed; top: -10px;
+      width: 8px; height: 12px; opacity: .95;
+      will-change: transform, opacity;
+      transform: translateY(-10px) rotate(0deg);
+      border-radius: 2px;
+      animation: confettiFall var(--t, 6s) linear forwards,
+                 confettiSpin var(--t2, 2s) ease-in-out infinite alternate;
+    }
+    @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: .98; } }
+    @keyframes confettiSpin { 0% { border-radius: 2px } 100% { border-radius: 6px } }
+
+    /* Animated saturation + hue cycling for ALL content */
+    body.party-mode {
+      animation: hueCycle 6s linear infinite;
+    }
+    @keyframes hueCycle {
+      0% { filter: hue-rotate(0deg) saturate(1.2) }
+      50% { filter: hue-rotate(180deg) saturate(1.6) }
+      100% { filter: hue-rotate(360deg) saturate(1.2) }
+    }
+
+    /* Elements that spin / float / wiggle */
+    .party-elt {
+      --d1: 2.2s;
+      --d2: 3.2s;
+      --d3: 4.5s;
+      --amp: 16px;
+      transform-origin: 50% 50%;
+      animation:
+        wobble var(--d2) ease-in-out infinite alternate,
+        floaty var(--d3) ease-in-out infinite;
+      will-change: transform, filter;
+    }
+    .party-elt.spin {
+      animation:
+        spinZ var(--d1) linear infinite,
+        wobble var(--d2) ease-in-out infinite alternate,
+        floaty var(--d3) ease-in-out infinite;
+    }
+    .party-elt.flip {
+      animation:
+        spinY var(--d1) linear infinite,
+        floaty var(--d3) ease-in-out infinite,
+        pulseGlow 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes spinZ { to { transform: rotate(360deg) } }
+    @keyframes spinY { to { transform: rotateY(360deg) } }
+    @keyframes wobble {
+      0% { transform: translateX(calc(var(--amp) * -1)) rotate(-3deg); }
+      100%{ transform: translateX(var(--amp)) rotate(3deg); }
+    }
+    @keyframes floaty {
+      0% { transform: translateY(calc(var(--amp) * -1)) }
+      100%{ transform: translateY(var(--amp)) }
+    }
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 6px 16px rgba(0,0,0,.25)) brightness(1.0); }
+      100%{ filter: drop-shadow(0 12px 28px rgba(0,0,0,.35)) brightness(1.2); }
+    }
+
     /* Print tweaks */
     @media print {
-      .rule { display: none; }
+      .rule, .chaos-btn, .party-overlay, .party-confetti { display: none !important; }
       a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 10px; color: #999; }
-      body { color: #000; }
+      body { color: #000; animation: none !important; filter: none !important; }
     }
   </style>
 </head>
@@ -263,6 +371,11 @@
 
   <!-- NYT-style masthead -->
   <div class="nyt-masthead">The Esports Times<small>ENG-1A • Opinion</small></div>
+
+  <!-- EXTRA CRAZY MODE BUTTON -->
+  <button class="chaos-btn" type="button" aria-pressed="false" aria-label="Toggle Extra Crazy Mode">
+    <span class="btn-emoji">☄️</span> <span class="btn-text">Crazy</span>
+  </button>
 
   <div class="wrapper">
     <header class="article-head" role="banner">
@@ -398,6 +511,10 @@
     <div class="vw-leg right"></div>
   </div>
 
+  <!-- Extra Crazy overlay layers -->
+  <div class="party-overlay" aria-hidden="true"></div>
+  <div class="party-confetti" aria-hidden="true"></div>
+
   <script>
     // Always start Game Mode OFF so the first success shows "ON"
     document.body.classList.remove('game-mode');
@@ -505,7 +622,7 @@
       if (document.body.classList.contains('game-mode')) attach();
     })();
 
-    // ===== Idle Chaos: clone-and-carry heists (target nearest visible item; drop near walker) =====
+    // ===== Idle Chaos: clone-and-carry heists (nearest visible; drop near walker) =====
     (function() {
       const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReduce) return;
@@ -514,9 +631,9 @@
       const WALK_MS   = 900;   // walker move duration
       const CARRY_MS  = 900;   // carry/drop duration
       const PAD       = 24;
-      const VIS_MIN   = 0.55;  // min visible area ratio to qualify as "visible"
-      const NEAR_RAD  = 420;   // how close the target must be to the walker to pick immediately
-      const DROP_RAD  = 240;   // radius around walker to drop the clone
+      const VIS_MIN   = 0.55;  // min visible area ratio
+      const NEAR_RAD  = 420;   // proximity to grab
+      const DROP_RAD  = 240;   // drop radius
 
       const walker   = document.querySelector('.voidwalker');
       const layer    = document.querySelector('.heist-layer');
@@ -555,7 +672,6 @@
 
       function randomScreenPoint(w = 120, h = 120, around) {
         if (around) {
-          // pick a point near "around" with some jitter and clamp to viewport
           const jitter = () => (Math.random()*2 - 1);
           const x = clamp(around.x + jitter()*DROP_RAD, PAD, window.innerWidth  - w  - PAD);
           const y = clamp(around.y + jitter()*DROP_RAD, PAD, window.innerHeight - h - PAD);
@@ -567,16 +683,14 @@
       }
 
       function candidateElements() {
-        // Only items with good visible area and in the middle vertical band (avoid picking way off-screen edges)
-        const els = Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'))
-          .filter(el => el.offsetParent);
+        const els = Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure')).filter(el => el.offsetParent);
         const vh = window.innerHeight;
         return els.filter(el => {
           const r = el.getBoundingClientRect();
           const vis = visibleAreaRatio(r);
           const centerY = (r.top + r.bottom) / 2;
-          const inMiddleBand = centerY > vh * 0.12 && centerY < vh * 0.88;
-          return vis >= VIS_MIN && inMiddleBand && r.height > 40 && r.width > 80;
+          const inBand = centerY > vh * 0.12 && centerY < vh * 0.88;
+          return vis >= VIS_MIN && inBand && r.height > 40 && r.width > 80;
         });
       }
 
@@ -619,33 +733,32 @@
         const clone = ensureClone(el);
         const cRect = clone.getBoundingClientRect();
         const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
-        const x = clamp(hands.x - cRect.width/2,  PAD, window.innerWidth  - cRect.width  - PAD);
-        const y = clamp(hands.y - cRect.height*0.6, PAD, window.innerHeight - cRect.height - PAD);
+        const x = Math.max(24, Math.min(window.innerWidth  - cRect.width  - 24, hands.x - cRect.width/2));
+        const y = Math.max(24, Math.min(window.innerHeight - cRect.height - 24, hands.y - cRect.height*0.6));
         moveCloneTo(clone, x, y, CARRY_MS);
-        walker.classList.add('carrying');
-        carrying = { el, clone };
+        document.querySelector('.voidwalker').classList.add('carrying');
+        window.carrying = { el, clone };
       }
 
       function dropNearWalker() {
+        const carrying = window.carrying;
         if (!carrying) return;
         const { clone } = carrying;
         const cRect = clone.getBoundingClientRect();
         const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
         const drop = randomScreenPoint(cRect.width, cRect.height, hands);
-        // Walk a smidge toward the drop point for flavor
-        const near = { x: clamp(drop.x - 60 + cRect.width/2, 8, window.innerWidth - 128),
-                       y: clamp(drop.y - 160 + cRect.height*0.3, 8, window.innerHeight - 200) };
+        const near = { x: Math.max(8, Math.min(window.innerWidth - 128, drop.x - 60 + cRect.width/2)),
+                       y: Math.max(8, Math.min(window.innerHeight - 200, drop.y - 160 + cRect.height*0.3)) };
         setWalkerPos(near.x, near.y, CARRY_MS);
         moveCloneTo(clone, drop.x, drop.y, CARRY_MS);
-        setTimeout(() => { walker.classList.remove('carrying'); carrying = null; }, CARRY_MS + 40);
+        setTimeout(() => { document.querySelector('.voidwalker').classList.remove('carrying'); window.carrying = null; }, CARRY_MS + 40);
       }
 
       function performHeist() {
-        if (carrying) { dropNearWalker(); return; }
+        if (window.carrying) { dropNearWalker(); return; }
 
         const pool = candidateElements();
         if (!pool.length) {
-          // nothing obvious → wander a little near center
           const mid = { x: window.innerWidth/2, y: window.innerHeight/2 };
           const p = randomScreenPoint(120, 280, mid);
           setWalkerPos(p.x, p.y, WALK_MS);
@@ -656,11 +769,10 @@
         if (!choice) return;
 
         const dist = Math.sqrt(choice.d2);
-        // If far, walk close first; if already near, grab immediately after a tiny shim
         const targetNear = viewportPointNear(choice.rect);
         setWalkerPos(targetNear.x, targetNear.y, WALK_MS);
 
-        const delay = dist > NEAR_RAD ? WALK_MS + 120 : 120;
+        const delay = dist > 420 ? WALK_MS + 120 : 120;
         setTimeout(() => {
           if (!document.body.classList.contains('chaos-mode')) return;
           pickUp(choice.el);
@@ -668,27 +780,25 @@
       }
 
       function clearHeistState() {
-        clones.forEach((clone, el) => {
-          if (clone && clone.parentNode) clone.parentNode.removeChild(clone);
-          el.style.visibility = '';
-        });
+        const layer = document.querySelector('.heist-layer');
+        layer.querySelectorAll('.lifted-clone').forEach(c => c.remove());
+        document.querySelectorAll('.headline, .deck, .section-hed, figure').forEach(el => el.style.visibility = '');
         clones.clear();
-        walker.classList.remove('carrying');
-        carrying = null;
+        document.querySelector('.voidwalker').classList.remove('carrying');
+        window.carrying = null;
       }
 
       function enterChaos() {
         if (document.body.classList.contains('chaos-mode')) return;
         document.body.classList.add('chaos-mode');
-        const start = randomScreenPoint(120, 280, { x: window.innerWidth/2, y: window.innerHeight*0.8 });
+        const start = { x: window.innerWidth/2 - 60, y: window.innerHeight*0.75 - 160 };
         setWalkerPos(start.x, start.y, WALK_MS);
         performHeist();
         heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 520);
       }
 
       function exitChaos() {
-        clearInterval(heistTimer);
-        heistTimer = null;
+        clearInterval(heistTimer); heistTimer = null;
         clearHeistState();
         document.body.classList.remove('chaos-mode');
       }
@@ -712,6 +822,104 @@
         if (!document.body.classList.contains('chaos-mode')) return;
         exitChaos();
         resetIdleTimer();
+      });
+    })();
+
+    // ===== Extra Crazy Mode (button toggled) =====
+    (function() {
+      const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const btn = document.querySelector('.chaos-btn');
+      const overlay = document.querySelector('.party-overlay');
+      const confettiLayer = document.querySelector('.party-confetti');
+
+      let confettiTimer = null;
+      let partyTargets = [];
+
+      function rand(min, max) { return Math.random() * (max - min) + min; }
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+      function spawnConfettiBurst(count = 24) {
+        const colors = ['var(--crazy1)','var(--crazy2)','var(--crazy3)','var(--crazy4)','var(--crazy5)','var(--crazy6)'];
+        for (let i = 0; i < count; i++) {
+          const c = document.createElement('div');
+          c.className = 'confetti';
+          const left = Math.random() * window.innerWidth;
+          c.style.left = left + 'px';
+          c.style.background = pick(colors);
+          c.style.transform = `translateY(-10px) rotate(${Math.floor(rand(-45,45))}deg)`;
+          c.style.setProperty('--t', `${rand(4,7)}s`);
+          c.style.setProperty('--t2', `${rand(1.2,2.4)}s`);
+          confettiLayer.appendChild(c);
+          setTimeout(() => c.remove(), 8000);
+        }
+      }
+
+      function startConfetti() {
+        spawnConfettiBurst(50);
+        confettiTimer = setInterval(() => spawnConfettiBurst(18), 350);
+      }
+
+      function stopConfetti() {
+        clearInterval(confettiTimer); confettiTimer = null;
+        confettiLayer.querySelectorAll('.confetti').forEach(n => n.remove());
+      }
+
+      function applyPartyClasses() {
+        partyTargets = Array.from(document.querySelectorAll(`
+          .nyt-masthead,
+          .headline, .deck, .section-hed,
+          .article-body p,
+          figure, figure img,
+          footer
+        `));
+        partyTargets.forEach(el => {
+          el.classList.add('party-elt');
+          // randomized speeds/amplitudes & extra spin/flip classes
+          el.style.setProperty('--d1', `${rand(1.2, 2.2)}s`);
+          el.style.setProperty('--d2', `${rand(1.4, 2.6)}s`);
+          el.style.setProperty('--d3', `${rand(3.3, 5.3)}s`);
+          el.style.setProperty('--amp', `${Math.floor(rand(8, 22))}px`);
+          if (Math.random() < 0.45) el.classList.add('spin');
+          if (Math.random() < 0.25) el.classList.add('flip');
+        });
+      }
+
+      function clearPartyClasses() {
+        partyTargets.forEach(el => {
+          el.classList.remove('party-elt','spin','flip');
+          el.style.removeProperty('--d1');
+          el.style.removeProperty('--d2');
+          el.style.removeProperty('--d3');
+          el.style.removeProperty('--amp');
+        });
+        partyTargets = [];
+      }
+
+      function toggleParty(force) {
+        if (prefersReduce) { showOverlay('Animations disabled (Reduce Motion)'); return; }
+        const on = (typeof force === 'boolean') ? force : !document.body.classList.contains('party-mode');
+        document.body.classList.toggle('party-mode', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.querySelector('.btn-emoji').textContent = on ? '🛑' : '☄️';
+        btn.querySelector('.btn-text').textContent = on ? 'Calm' : 'Crazy';
+        overlay.style.display = on ? 'block' : 'none';
+
+        if (on) {
+          applyPartyClasses();
+          startConfetti();
+        } else {
+          clearPartyClasses();
+          stopConfetti();
+        }
+      }
+
+      btn.addEventListener('click', () => toggleParty());
+
+      // Optional keyboard shortcut: press C to toggle party
+      window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          toggleParty();
+        }
       });
     })();
 
