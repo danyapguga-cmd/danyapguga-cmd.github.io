@@ -20,7 +20,6 @@
       overflow-x:hidden;
     }
 
-    /* Masthead */
     .nyt-masthead{font-family:'UnifrakturCook','Old English Text MT','Lucida Blackletter',serif;font-size:clamp(40px,6vw,76px);line-height:1;text-align:center;margin:22px 0 2px;letter-spacing:.4px}
     .nyt-masthead small{display:block;font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
     .wrapper{max-width:var(--maxw);margin:0 auto;padding:0 18px}
@@ -59,14 +58,12 @@
     .gg-overlay{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.65);color:#fff;z-index:9998;font-family:'Anton',Impact,'Arial Black',sans-serif;font-size:clamp(36px,6vw,80px);letter-spacing:.5px;text-transform:uppercase;animation:gg-pop .6s ease-out}
     @keyframes gg-pop{0%{transform:scale(.92);opacity:0}100%{transform:scale(1);opacity:1}}
 
-    /* Game Mode (unchanged) */
     body.game-mode::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9997;background:linear-gradient(rgba(255,255,255,.045) 50%,transparent 50%) 0 0/100% 2px,radial-gradient(circle at 50% 50%,transparent 0 3px,rgba(0,0,0,.14) 3px) 0 0/6px 6px,linear-gradient(90deg,rgba(0,0,0,.28),transparent 60%,rgba(0,0,0,.28)) 0 0/100% 100%;opacity:.9;animation:crt-flicker 1.1s infinite ease-in-out alternate}
     @keyframes crt-flicker{0%{opacity:.78}100%{opacity:.92}}
     body.game-mode::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9996;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 40%,rgba(0,0,0,.35) 100%);mix-blend-mode:multiply}
     body.game-mode{filter:contrast(1.18) saturate(1.25) hue-rotate(6deg)}
     body.game-mode figure img{transform:scale(1.02);filter:saturate(1.25) contrast(1.08) drop-shadow(0 8px 24px rgba(0,0,0,.25));transition:transform .35s,filter .35s}
 
-    /* Heist layers + walker (unchanged base) */
     .heist-layer{position:fixed;inset:0;pointer-events:none;z-index:9995}
     .lifted-clone{position:fixed;left:0;top:0;margin:0;z-index:9995;pointer-events:none;box-shadow:0 18px 30px rgba(0,0,0,.25);filter:brightness(1.03);transition:left 900ms ease,top 900ms ease,transform 900ms ease,filter 900ms ease;background:#fff}
     .voidwalker{position:fixed;left:0;top:0;width:120px;height:280px;z-index:9996;pointer-events:none;opacity:.96;display:none;filter:drop-shadow(0 8px 16px rgba(0,0,0,.45));transform:translate(-160px,calc(100vh - 320px));transition:transform 900ms ease-in-out}
@@ -91,7 +88,6 @@
     #works-cited li>span{display:block;padding-left:14px;text-indent:-14px}
     footer{color:var(--muted);font-family:'Libre Franklin',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px;text-align:center;padding:28px 0 60px;border-top:1px solid var(--rule);margin-top:36px}
 
-    /* ===== Buttons (always bottom-right in BOTH states) ===== */
     .chaos-btn{
       position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));
       display:inline-flex;align-items:center;gap:8px;padding:12px 16px;
@@ -104,7 +100,6 @@
     .chaos-btn:active{transform:scale(.98)}
     .chaos-btn[aria-pressed="true"]{background:linear-gradient(135deg,var(--crazy3),var(--crazy4),var(--crazy6));filter:saturate(1.3) contrast(1.1)}
 
-    /* ===== Disco ball ===== */
     .disco{position:fixed;left:50%;top:0;transform:translate(-50%,-28%);z-index:9993;display:none;pointer-events:none}
     body.party-mode .disco{display:block;animation:discoBob 2s ease-in-out infinite alternate}
     @keyframes discoBob{0%{transform:translate(-50%,-30%)}100%{transform:translate(-50%,-18%)}}
@@ -123,10 +118,9 @@
     .disco .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff,0 0 20px #fff;animation:sparkle 1.6s linear infinite}
     @keyframes sparkle{0%,100%{opacity:.2}50%{opacity:1}}
 
-    /* ===== Full-page color background (giant circular swirl) ===== */
     .party-bg{
       position:fixed;left:50%;top:50%;
-      width:220vmax;height:220vmax; /* much larger than viewport to avoid edges */
+      width:220vmax;height:220vmax;
       transform:translate(-50%,-50%);
       border-radius:50%;
       background:
@@ -137,40 +131,18 @@
     }
     @keyframes partySpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 
-    /* Global hue cycle for EVERYTHING when party-mode */
     body.party-mode{animation:hueCycle 6s linear infinite}
     @keyframes hueCycle{0%{filter:hue-rotate(0) saturate(1.2)}50%{filter:hue-rotate(180deg) saturate(1.6)}100%{filter:hue-rotate(360deg) saturate(1.2)}}
 
-    /* Confetti */
     .party-confetti{position:fixed;inset:0;pointer-events:none;z-index:9992}
-
-    .confetti{
-      position:fixed;top:-10px;width:8px;height:12px;opacity:.95;will-change:transform,opacity;transform:translateY(-10px) rotate(0);border-radius:2px;
-      animation:confettiFall var(--t,6s) linear forwards, confettiSpin var(--t2,2s) ease-in-out infinite alternate
-    }
+    .confetti{position:fixed;top:-10px;width:8px;height:12px;opacity:.95;will-change:transform,opacity;transform:translateY(-10px) rotate(0);border-radius:2px;animation:confettiFall var(--t,6s) linear forwards, confettiSpin var(--t2,2s) ease-in-out infinite alternate}
     @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:.98}}
     @keyframes confettiSpin{0%{border-radius:2px}100%{border-radius:6px}}
 
-    /* ===== SPIN EVERYTHING: single transform animation so rotation is guaranteed ===== */
-    .party-elt{
-      --spd: 2.4s;               /* rotation speed */
-      --ampX: 8px; --ampY: 8px;  /* tiny drift so it feels alive */
-      transform-origin: 50% 50%;
-      animation: spin360 var(--spd) linear infinite;
-      will-change: transform, filter;
-    }
-    .party-elt.spin3d{ animation: spin3d var(--spd) linear infinite }
-
-    @keyframes spin360{
-      0%   { transform: translate(0,0) rotate(0deg)    scale(1) }
-      50%  { transform: translate(var(--ampX), calc(-1 * var(--ampY))) rotate(180deg) scale(1.03) }
-      100% { transform: translate(0,0) rotate(360deg)  scale(1) }
-    }
-    @keyframes spin3d{
-      0%   { transform: translate(0,0) rotate(0deg) rotateY(0deg)   }
-      50%  { transform: translate(var(--ampX), calc(-1 * var(--ampY))) rotate(180deg) rotateY(180deg) }
-      100% { transform: translate(0,0) rotate(360deg) rotateY(360deg) }
-    }
+    .party-elt{--spd:2.4s;--ampX:8px;--ampY:8px;transform-origin:50% 50%;animation:spin360 var(--spd) linear infinite;will-change:transform,filter}
+    .party-elt.spin3d{animation:spin3d var(--spd) linear infinite}
+    @keyframes spin360{0%{transform:translate(0,0) rotate(0deg) scale(1)}50%{transform:translate(var(--ampX),calc(-1*var(--ampY))) rotate(180deg) scale(1.03)}100%{transform:translate(0,0) rotate(360deg) scale(1)}}
+    @keyframes spin3d{0%{transform:translate(0,0) rotate(0) rotateY(0)}50%{transform:translate(var(--ampX),calc(-1*var(--ampY))) rotate(180deg) rotateY(180deg)}100%{transform:translate(0,0) rotate(360deg) rotateY(360deg)}}
 
     @media print{
       .rule,.chaos-btn,.party-confetti,.party-bg,.disco{display:none!important}
@@ -182,12 +154,10 @@
 <body>
   <div class="nyt-masthead">The Esports Times<small>ENG-1A • Opinion</small></div>
 
-  <!-- Toggle button (works anywhere in both states) -->
   <button class="chaos-btn" type="button" aria-pressed="false" aria-label="Toggle Extra Crazy Mode">
     <span class="btn-emoji">☄️</span> <span class="btn-text">Crazy</span>
   </button>
 
-  <!-- Disco + full-page color background + confetti -->
   <div class="disco" aria-hidden="true">
     <div class="ball">
       <div class="spark" style="left:20px;top:24px;animation-delay:.1s"></div>
@@ -307,7 +277,6 @@
     </footer>
   </div>
 
-  <!-- Heist overlay + Voidwalker -->
   <div class="heist-layer" aria-hidden="true"></div>
   <div class="voidwalker" aria-hidden="true">
     <div class="vw-head"><div class="vw-eyes"><div class="vw-eye"></div><div class="vw-eye"></div></div></div>
@@ -317,75 +286,233 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    /* Reveal */
     (function(){
       const targets=document.querySelectorAll('.headline,.deck,.section-hed,figure,#works-cited');
-      const io=new IntersectionObserver(es=>{
-        es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} });
-      },{threshold:.18});
-      targets.forEach(el=>{el.classList.add('reveal'); io.observe(el);});
+      const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}})},{threshold:.18});
+      targets.forEach(el=>{el.classList.add('reveal');io.observe(el);});
     })();
 
-    /* +1 APM click bubble */
     (function(){
-      const story=document.querySelector('article.story'); if(!story) return;
-      story.addEventListener('click',e=>{
-        const apm=document.createElement('div'); apm.className='apm'; apm.textContent='+1 APM';
-        apm.style.left=e.clientX+'px'; apm.style.top=e.clientY+'px'; document.body.appendChild(apm); setTimeout(()=>apm.remove(),900);
-      });
+      const story=document.querySelector('article.story');if(!story)return;
+      story.addEventListener('click',e=>{const n=document.createElement('div');n.className='apm';n.textContent='+1 APM';n.style.left=e.clientX+'px';n.style.top=e.clientY+'px';document.body.appendChild(n);setTimeout(()=>n.remove(),900);});
     })();
 
-    function showOverlay(t){const o=document.createElement('div');o.className='gg-overlay';o.role='status';o.setAttribute('aria-live','polite');o.textContent=t;document.body.appendChild(o);setTimeout(()=>o.remove(),1400)}
+    function showOverlay(t){const o=document.createElement('div');o.className='gg-overlay';o.role='status';o.setAttribute('aria-live','polite');o.textContent=t;document.body.appendChild(o);setTimeout(()=>o.remove(),1400);}
 
-    /* GG on double-G */
     (function(){let g=0,t;addEventListener('keydown',e=>{if(e.key.toLowerCase()!=='g')return;g++;clearTimeout(t);t=setTimeout(()=>g=0,550);if(g>=2){g=0;showOverlay('GG')}})})();
 
-    /* Konami toggles Game Mode */
     (function(){
       const combo=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let i=0;
       addEventListener('keydown',e=>{
         const k=e.key.length===1?e.key.toLowerCase():e.key;const need=combo[i].length===1?combo[i].toLowerCase():combo[i];
         if(k===need){i++;if(i===combo.length){i=0;const on=!document.body.classList.contains('game-mode');document.body.classList.toggle('game-mode',on);showOverlay('Game Mode: '+(on?'ON':'OFF'));}}
-        else{const first=combo[0];const fk=first.length===1?first.toLowerCase():first;i=(k===fk)?1:0;}
+        else{const fk=combo[0].length===1?combo[0].toLowerCase():combo[0];i=(k===fk)?1:0;}
       });
     })();
 
-    /* Game Mode mouse trail */
     (function(){
       let enabled=false,onMove;
-      function dot(x,y){const d=document.createElement('div');d.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 10px rgba(255,255,255,.9),0 0 24px rgba(120,120,255,.6);z-index:9999;pointer-events:none;opacity:.95;transition:transform .6s,opacity .6s';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform='translateY(-20px) scale(.5)';d.style.opacity=0;});setTimeout(()=>d.remove(),650);}
+      function dot(x,y){const d=document.createElement('div');d.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 10px rgba(255,255,255,.9),0 0 24px rgba(120,120,255,.6);z-index:9999;pointer-events:none;opacity:.95;transition:transform .6s,opacity .6s';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform="translateY(-20px) scale(.5)";d.style.opacity=0;});setTimeout(()=>d.remove(),650);}
       function attach(){if(enabled)return;enabled=true;onMove=e=>document.body.classList.contains('game-mode')&&dot(e.clientX,e.clientY);addEventListener('mousemove',onMove,{passive:true});}
       function detach(){if(!enabled)return;enabled=false;removeEventListener('mousemove',onMove);}
       const obs=new MutationObserver(()=>{document.body.classList.contains('game-mode')?attach():detach();});obs.observe(document.body,{attributes:true,attributeFilter:['class']});if(document.body.classList.contains('game-mode'))attach();
     })();
 
-    /* Idle Chaos: walker heist (as before) */
+    /* ===== Idle Chaos: walker heist with round queue (no repeats until all are visited) ===== */
     (function(){
-      if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-      const IDLE_MS=7000,WALK_MS=900,CARRY_MS=900,PAD=24,VIS_MIN=.55,NEAR_RAD=420,DROP_RAD=240;
-      const walker=document.querySelector('.voidwalker');const layer=document.querySelector('.heist-layer');
-      let idleTimer=null,heistTimer=null,carrying=null;const clones=new Map();
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const IDLE_MS=8000,WALK_MS=900,CARRY_MS=900,PAD=24,VIS_MIN=.55,DROP_RAD=240;
+      const walker=document.querySelector('.voidwalker');
+      const layer=document.querySelector('.heist-layer');
+
+      let idleTimer=null, heistTimer=null;
+      const clones=new Map();              // original -> clone
+      let carrying=null;                   // {el, clone}
+      let roundOrder=[];                   // array of originals in current round
+      let visited=new Set();               // originals visited in current round
+      let lastOriginal=null;               // to avoid immediate repeat
+
       function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
       function vwRect(){return walker.getBoundingClientRect()}
-      function setWalkerPos(x,y,d=WALK_MS){walker.style.transition=`transform ${d}ms ease-in-out`;walker.style.transform=`translate(${x}px,${y}px)`}
-      function visRatio(r){const vx0=0,vy0=0,vx1=innerWidth,vy1=innerHeight;const ix0=Math.max(r.left,vx0),iy0=Math.max(r.top,vy0),ix1=Math.min(r.right,vx1),iy1=Math.min(r.bottom,vy1);const iw=Math.max(0,ix1-ix0),ih=Math.max(0,iy1-iy0);return (iw*ih)/Math.max(1,r.width*r.height)}
-      function nearPoint(r){return {x:clamp(r.left+r.width*.5-60,8,innerWidth-128),y:clamp(r.top+r.height*.3-160,8,innerHeight-200)}}
-      function rndPoint(w=120,h=120,around){if(around){const j=()=>Math.random()*2-1;return {x:clamp(around.x+j()*DROP_RAD,PAD,innerWidth-w-PAD),y:clamp(around.y+j()*DROP_RAD,PAD,innerHeight-h-PAD)}}return {x:clamp(Math.random()*(innerWidth-w-PAD*2)+PAD,PAD,innerWidth-w-PAD),y:clamp(Math.random()*(innerHeight-h-PAD*2)+PAD,PAD,innerHeight-h-PAD)}}
-      function candidates(){const els=[...document.querySelectorAll('.headline,.deck,.section-hed,figure')].filter(el=>el.offsetParent);const vh=innerHeight;return els.filter(el=>{const r=el.getBoundingClientRect();const v=visRatio(r);const cy=(r.top+r.bottom)/2;const band=cy>vh*.12&&cy<vh*.88;return v>=VIS_MIN&&band&&r.height>40&&r.width>80});}
-      function nearest(els){const h={x:vwRect().left+60,y:vwRect().top+140};let best=null,b=1/0;for(const el of els){const r=el.getBoundingClientRect();const cx=r.left+r.width/2,cy=r.top+r.height/2;const d2=(cx-h.x)**2+(cy-h.y)**2;if(d2<b){b=d2;best={el,d2,rect:r}}}return best;}
-      function ensureClone(el){if(clones.has(el))return clones.get(el);const r=el.getBoundingClientRect();const c=el.cloneNode(true);c.className='lifted-clone';c.style.width=r.width+'px';c.style.left=r.left+'px';c.style.top=r.top+'px';c.style.transform=`rotate(${(Math.random()*10-5).toFixed(1)}deg)`;layer.appendChild(c);el.style.visibility='hidden';clones.set(el,c);return c;}
-      function moveClone(c,x,y,d=CARRY_MS){c.style.transitionDuration=d+'ms';c.style.left=x+'px';c.style.top=y+'px'}
-      function pickUp(el){const c=ensureClone(el);const cr=c.getBoundingClientRect();const h={x:vwRect().left+60,y:vwRect().top+140};const x=Math.max(24,Math.min(innerWidth-cr.width-24,h.x-cr.width/2)),y=Math.max(24,Math.min(innerHeight-cr.height-24,h.y-cr.height*.6));moveClone(c,x,y);walker.classList.add('carrying');carrying={el,clone:c};}
-      function dropNear(){if(!carrying)return;const {clone:c}=carrying;const cr=c.getBoundingClientRect();const h={x:vwRect().left+60,y:vwRect().top+140};const drop=rndPoint(cr.width,cr.height,h);const near={x:Math.max(8,Math.min(innerWidth-128,drop.x-60+cr.width/2)),y:Math.max(8,Math.min(innerHeight-200,drop.y-160+cr.height*.3))};setWalkerPos(near.x,near.y,CARRY_MS);moveClone(c,drop.x,drop.y,CARRY_MS);setTimeout(()=>{walker.classList.remove('carrying');carrying=null;},CARRY_MS+40);}
-      function heist(){if(carrying){dropNear();return}const pool=candidates();if(!pool.length){const m={x:innerWidth/2,y:innerHeight/2};const p=rndPoint(120,280,m);setWalkerPos(p.x,p.y,WALK_MS);return}const pick=nearest(pool);if(!pick)return;const dist=Math.sqrt(pick.d2);const n=nearPoint(pick.rect);setWalkerPos(n.x,n.y,WALK_MS);setTimeout(()=>{if(!document.body.classList.contains('chaos-mode'))return;pickUp(pick.el);},dist>NEAR_RAD?WALK_MS+120:120);}
-      function clearState(){clones.forEach((c,el)=>{c.remove();el.style.visibility=''});clones.clear();walker.classList.remove('carrying');carrying=null;}
-      function enter(){if(document.body.classList.contains('chaos-mode'))return;document.body.classList.add('chaos-mode');const start={x:innerWidth/2-60,y:innerHeight*.75-160};setWalkerPos(start.x,start.y,WALK_MS);heist();heistTimer=setInterval(heist,WALK_MS+CARRY_MS+520);}
-      function exit(){clearInterval(heistTimer);heistTimer=null;clearState();document.body.classList.remove('chaos-mode');}
-      function reset(){clearTimeout(idleTimer);if(document.body.classList.contains('chaos-mode'))exit();idleTimer=setTimeout(enter,IDLE_MS);}
-      reset();['mousemove','mousedown','keydown','touchstart','scroll','wheel'].forEach(ev=>addEventListener(ev,reset,{passive:true}));addEventListener('resize',()=>{if(document.body.classList.contains('chaos-mode')){exit();reset();}});
+      function setWalkerPos(x,y,d=WALK_MS){walker.style.transition=`transform ${d}ms ease-in-out`; walker.style.transform=`translate(${x}px,${y}px)`}
+
+      function visibleAreaRatio(rect){
+        const vx0=0,vy0=0,vx1=innerWidth,vy1=innerHeight;
+        const ix0=Math.max(rect.left,vx0),iy0=Math.max(rect.top,vy0),ix1=Math.min(rect.right,vx1),iy1=Math.min(rect.bottom,vy1);
+        const iw=Math.max(0,ix1-ix0),ih=Math.max(0,iy1-iy0);
+        return (iw*ih)/Math.max(1,rect.width*rect.height);
+      }
+
+      // Get rectangle of the thing the user sees (clone if exists, else original)
+      function visualNode(original){
+        return clones.get(original) || original;
+      }
+
+      function isVisuallyEligible(original){
+        const node = visualNode(original);
+        if(!node || !node.getBoundingClientRect) return false;
+        const r = node.getBoundingClientRect();
+        const vh = innerHeight;
+        const vis = visibleAreaRatio(r);
+        const centerY = (r.top + r.bottom)/2;
+        const inBand = centerY > vh*0.12 && centerY < vh*0.88;
+        return vis >= VIS_MIN && inBand && r.height > 40 && r.width > 80;
+      }
+
+      // Source elements we want to play with (originals only)
+      function allOriginals(){
+        return Array.from(document.querySelectorAll('.headline, .deck, .section-hed, figure'));
+      }
+
+      // Build a fresh round consisting of on-screen, eligible originals; shuffle it
+      function buildRound(){
+        const pool = allOriginals().filter(isVisuallyEligible);
+        // Fisher–Yates shuffle
+        for(let i=pool.length-1;i>0;i--){
+          const j = Math.floor(Math.random()*(i+1)); [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        roundOrder = pool;
+        visited.clear();
+      }
+
+      function nextOriginal(){
+        // If nothing to visit or all visited, rebuild
+        if(!roundOrder.length || visited.size >= roundOrder.length) {
+          buildRound();
+        }
+        // Find the next eligible original that is NOT visited and NOT the same as last
+        for(let i=0;i<roundOrder.length;i++){
+          const o = roundOrder[i];
+          if(visited.has(o)) continue;
+          if(o === lastOriginal) continue;
+          if(isVisuallyEligible(o)) return o;
+          // If it's no longer eligible, mark visited for this round and continue
+          visited.add(o);
+        }
+        // If we got here, rebuild and try once more
+        buildRound();
+        for(const o of roundOrder){
+          if(!visited.has(o) && o !== lastOriginal && isVisuallyEligible(o)) return o;
+        }
+        return null;
+      }
+
+      function ensureClone(original){
+        if(clones.has(original)) return clones.get(original);
+        const src = visualNode(original);            // if already moved, use the clone as position source
+        const r = src.getBoundingClientRect();
+        const c = original.cloneNode(true);
+        c.classList.add('lifted-clone');
+        c.style.width = r.width + 'px';
+        c.style.left  = r.left  + 'px';
+        c.style.top   = r.top   + 'px';
+        c.style.transform = `rotate(${(Math.random()*10 - 5).toFixed(1)}deg)`;
+        layer.appendChild(c);
+        original.style.visibility = 'hidden';        // keep flow, but hide original
+        clones.set(original, c);
+        return c;
+      }
+
+      function moveCloneTo(clone, x, y, d=CARRY_MS){
+        clone.style.transitionDuration = d + 'ms';
+        clone.style.left = x + 'px';
+        clone.style.top  = y + 'px';
+      }
+
+      function pickUp(original){
+        const clone = ensureClone(original);
+        const cr = clone.getBoundingClientRect();
+        const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
+        const x = clamp(hands.x - cr.width/2, 24, innerWidth - cr.width - 24);
+        const y = clamp(hands.y - cr.height*.6, 24, innerHeight - cr.height - 24);
+        moveCloneTo(clone, x, y);
+        walker.classList.add('carrying');
+        carrying = { el: original, clone };
+      }
+
+      function dropNearWalker(){
+        if(!carrying) return;
+        const { clone } = carrying;
+        const cr = clone.getBoundingClientRect();
+        const hands = { x: vwRect().left + 60, y: vwRect().top + 140 };
+
+        const jitter=()=> (Math.random()*2 - 1);
+        const dropX = clamp(hands.x + jitter()*DROP_RAD - cr.width/2,  PAD, innerWidth  - cr.width  - PAD);
+        const dropY = clamp(hands.y + jitter()*DROP_RAD - cr.height/2, PAD, innerHeight - cr.height - PAD);
+
+        moveCloneTo(clone, dropX, dropY, CARRY_MS);
+        setTimeout(()=>{ walker.classList.remove('carrying'); carrying = null; }, CARRY_MS + 40);
+      }
+
+      function performHeist(){
+        if(carrying){ dropNearWalker(); return; }
+
+        // Choose next target in the round
+        const original = nextOriginal();
+        if(!original){
+          // nothing eligible; wander a bit
+          const x = clamp(Math.random()*(innerWidth-200)+80, 8, innerWidth-128);
+          const y = clamp(Math.random()*(innerHeight-240)+80, 8, innerHeight-200);
+          setWalkerPos(x,y,WALK_MS);
+          return;
+        }
+
+        // Move near the visual node (clone if exists)
+        const node = visualNode(original);
+        const r = node.getBoundingClientRect();
+        const nearX = clamp(r.left + r.width*0.5 - 60, 8, innerWidth-128);
+        const nearY = clamp(r.top  + r.height*0.30 - 160, 8, innerHeight-200);
+        setWalkerPos(nearX, nearY, WALK_MS);
+
+        setTimeout(()=>{
+          if(!document.body.classList.contains('chaos-mode')) return;
+          pickUp(original);
+          visited.add(original);        // mark as visited this round
+          lastOriginal = original;      // remember for no back-to-back
+        }, WALK_MS + 100);
+      }
+
+      function clearHeistState(){
+        layer.querySelectorAll('.lifted-clone').forEach(c => c.remove());
+        // reveal originals
+        allOriginals().forEach(o => o.style.visibility = '');
+        clones.clear();
+        walker.classList.remove('carrying');
+        carrying = null;
+        lastOriginal = null;
+        visited.clear();
+        roundOrder = [];
+      }
+
+      function enterChaos(){
+        if(document.body.classList.contains('chaos-mode')) return;
+        document.body.classList.add('chaos-mode');
+        const start = { x: innerWidth/2 - 60, y: innerHeight*0.75 - 160 };
+        setWalkerPos(start.x, start.y, WALK_MS);
+        buildRound();
+        performHeist();
+        heistTimer = setInterval(performHeist, WALK_MS + CARRY_MS + 520);
+      }
+
+      function exitChaos(){
+        clearInterval(heistTimer); heistTimer = null;
+        clearHeistState();
+        document.body.classList.remove('chaos-mode');
+      }
+
+      function resetIdleTimer(){
+        clearTimeout(idleTimer);
+        if(document.body.classList.contains('chaos-mode')) exitChaos();
+        idleTimer = setTimeout(enterChaos, IDLE_MS);
+      }
+
+      resetIdleTimer();
+      ['mousemove','mousedown','keydown','touchstart','scroll','wheel'].forEach(ev => addEventListener(ev, resetIdleTimer, { passive:true }));
+      addEventListener('resize', () => { if(document.body.classList.contains('chaos-mode')){ exitChaos(); resetIdleTimer(); } });
     })();
 
-    /* ===== Extra Crazy Mode ===== */
+    /* ===== Extra Crazy Mode (unchanged) ===== */
     (function(){
       const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const btn=document.querySelector('.chaos-btn');
@@ -414,13 +541,11 @@
       function stopConfetti(){clearInterval(confettiTimer);confettiTimer=null;confetti.querySelectorAll('.confetti').forEach(n=>n.remove())}
 
       function applyParty(){
-        // Spin basically everything in the article & header/footer
         targets = Array.from(document.querySelectorAll(`
           .nyt-masthead, header.article-head *, article.story *:not(script):not(style), footer *
         `));
         targets.forEach(el=>{
           el.classList.add('party-elt');
-          // randomize speed & tiny drift so not all sync
           el.style.setProperty('--spd', `${rand(1.2, 3.0)}s`);
           el.style.setProperty('--ampX', `${Math.floor(rand(-10, 10))}px`);
           el.style.setProperty('--ampY', `${Math.floor(rand(  0, 14))}px`);
@@ -453,7 +578,6 @@
       addEventListener('keydown',e=>{if(e.key.toLowerCase()==='c' && !e.ctrlKey && !e.metaKey && !e.altKey){toggleParty();}});
     })();
 
-    /* Double-tap masthead toggles Game Mode (mobile) */
     (function(){const m=document.querySelector('.nyt-masthead');if(!m)return;let t=0;m.addEventListener('touchend',()=>{const n=Date.now();if(n-t<350){const on=!document.body.classList.contains('game-mode');document.body.classList.toggle('game-mode',on);showOverlay('Game Mode: '+(on?'ON':'OFF'));}t=n;});})();
   </script>
 </body>
